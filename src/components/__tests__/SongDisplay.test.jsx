@@ -13,17 +13,22 @@ describe('SongDisplay', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    api.fetchTabForSong.mockResolvedValue(mockTab)
   })
 
-  it('displays song title and artist', () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
+  // Helper to wait for the initial fetch to complete
+  const waitForFetch = () => waitFor(() => {
+    expect(api.fetchTabForSong).toHaveBeenCalled()
+  })
+
+  it('displays song title and artist', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
 
     expect(screen.getByText('Test Song - Test Artist')).toBeInTheDocument()
   })
 
   it('fetches tab on mount', async () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
     render(<SongDisplay user={mockUser} song={mockSong} />)
 
     await waitFor(() => {
@@ -32,7 +37,6 @@ describe('SongDisplay', () => {
   })
 
   it('displays tab content in textarea', async () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
     render(<SongDisplay user={mockUser} song={mockSong} />)
 
     await waitFor(() => {
@@ -40,23 +44,23 @@ describe('SongDisplay', () => {
     })
   })
 
-  it('has readonly textarea', () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
+  it('has readonly textarea', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
 
     expect(screen.getByRole('textbox')).toHaveAttribute('readonly')
   })
 
-  it('shows Start Scrolling button initially', () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
+  it('shows Start Scrolling button initially', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
 
     expect(screen.getByRole('button', { name: /start scrolling/i })).toBeInTheDocument()
   })
 
   it('toggles to Stop Scrolling when clicked', async () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
     render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
 
     fireEvent.click(screen.getByRole('button', { name: /start scrolling/i }))
 
@@ -64,8 +68,8 @@ describe('SongDisplay', () => {
   })
 
   it('toggles back to Start Scrolling when clicked again', async () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
     render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
 
     fireEvent.click(screen.getByRole('button', { name: /start scrolling/i }))
     fireEvent.click(screen.getByRole('button', { name: /stop scrolling/i }))
@@ -73,16 +77,16 @@ describe('SongDisplay', () => {
     expect(screen.getByRole('button', { name: /start scrolling/i })).toBeInTheDocument()
   })
 
-  it('renders plus button for speed increase', () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
+  it('renders plus button for speed increase', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
 
     expect(screen.getByText('+')).toBeInTheDocument()
   })
 
-  it('renders minus button for speed decrease', () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
+  it('renders minus button for speed decrease', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
 
     expect(screen.getByText('-')).toBeInTheDocument()
   })
@@ -101,7 +105,6 @@ describe('SongDisplay', () => {
   })
 
   it('refetches when song.id changes', async () => {
-    api.fetchTabForSong.mockResolvedValue(mockTab)
     const { rerender } = render(<SongDisplay user={mockUser} song={mockSong} />)
 
     await waitFor(() => {
