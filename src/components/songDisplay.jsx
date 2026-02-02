@@ -1,0 +1,67 @@
+import React from 'react';
+import '../css/songDisplay.css';
+import { fetchTabForSong } from '../services/api';
+
+const SongDisplay = ({ user, song }) => {
+  const [tab, setTab] = React.useState('');
+  const [scrollSpeed, setScrollSpeed] = React.useState(50);
+  const [isScrolling, setIsScrolling] = React.useState(false);
+
+  const tabRef = React.useRef(null);
+  const intervalRef = React.useRef(null);
+
+  const toggleScrolling = () => {
+    setIsScrolling(prev => !prev);
+  };
+
+  React.useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    if (isScrolling) {
+      intervalRef.current = setInterval(() => {
+        if (tabRef.current) tabRef.current.scrollBy(0, 1);
+      }, 5000 / Math.max(0.1, scrollSpeed));
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isScrolling, scrollSpeed]);
+
+  React.useEffect(() => {
+    const getTab = async () => {
+      try {
+        const fetchedTab = await fetchTabForSong(user, song.id);
+        setTab(fetchedTab.text);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getTab();
+  }, [song.id]);
+
+  return (
+    <div className="song-display">
+      <h2>{song.title} - {song.artist}</h2>
+      <div className="tab-container">
+        <div className="buttons">
+          <div className="plus-minus">
+            <div className="plus" onClick={() => setScrollSpeed(prev => prev + 20)}>+</div>
+            <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 20))}>-</div>
+          </div>
+          <button onClick={() => toggleScrolling()}>{isScrolling ? 'Stop' : 'Start'} Scrolling</button>
+        </div>
+        <textarea className="tab" value={tab} ref={tabRef} readOnly />
+      </div>
+    </div>
+  );
+};
+
+export default SongDisplay;

@@ -1,0 +1,56 @@
+.search-results {
+  padding: 20px;
+  margin-top: 100px;
+}
+
+.search-results h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.search-results table {
+  width: 70vw;
+  border-collapse: collapse;
+}
+
+.search-results th, .search-results td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+.search-results th {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.search-results tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.search-results .pagination {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.search-results .pagination .previous, .search-results .pagination .next {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  cursor: pointer;
+}
+
+.search-results .pagination .previous:hover, .search-results .pagination .next:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.search-results .pagination .previous {
+  margin-right: auto;
+}
+
+.search-results .pagination .next {
+  margin-left: auto;
+}
