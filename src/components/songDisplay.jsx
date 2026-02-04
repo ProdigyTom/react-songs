@@ -4,7 +4,7 @@ import { fetchTabForSong } from '../services/api';
 
 const SongDisplay = ({ user, song }) => {
   const [tab, setTab] = React.useState('');
-  const [scrollSpeed, setScrollSpeed] = React.useState(50);
+  const [scrollSpeed, setScrollSpeed] = React.useState(20);
   const [isScrolling, setIsScrolling] = React.useState(false);
 
   const tabRef = React.useRef(null);
@@ -22,8 +22,12 @@ const SongDisplay = ({ user, song }) => {
 
     if (isScrolling) {
       intervalRef.current = setInterval(() => {
-        if (tabRef.current) tabRef.current.scrollBy(0, 1);
-      }, 5000 / Math.max(0.1, scrollSpeed));
+        if (tabRef.current) tabRef.current.scrollBy({
+          top: 0.5,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }, 3000 / Math.max(0.1, scrollSpeed));
     }
 
     return () => {
@@ -53,8 +57,8 @@ const SongDisplay = ({ user, song }) => {
       <div className="tab-container">
         <div className="buttons">
           <div className="plus-minus">
-            <div className="plus" onClick={() => setScrollSpeed(prev => prev + 20)}>+</div>
-            <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 20))}>-</div>
+            <div className="plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
+            <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
           </div>
           <button onClick={() => toggleScrolling()}>{isScrolling ? 'Stop' : 'Start'} Scrolling</button>
         </div>
