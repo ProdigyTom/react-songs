@@ -1,11 +1,38 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import '../css/menu.css'
 
 const Menu = ({ user, showMenu, toggleMenu, setCurrentPage, setSearchString }) => {
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const isMenuToggleButton = event.target.closest('.header-menu');
+      if (showMenu && menuRef.current && !menuRef.current.contains(event.target) && !isMenuToggleButton) {
+        toggleMenu();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMenu, toggleMenu]);
+
+  function handleMenuItemClick(page) {
+    setCurrentPage(page);
+    toggleMenu();
+  }
+
+  function handleSearch() {
+    setSearchString(document.querySelector('.menu-search').value);
+    setCurrentPage('searchResults');
+    toggleMenu();
+  }
+
   if (!user) return null;
 
   return (
-    <div className={`menu ${showMenu ? 'open' : 'closed'}`} onBlur={toggleMenu}>
+    <div ref={menuRef} className={`menu ${showMenu ? 'open' : 'closed'}`}>
       <div className="menu-exit" onClick={() => {
         toggleMenu();
       }}>
@@ -14,21 +41,18 @@ const Menu = ({ user, showMenu, toggleMenu, setCurrentPage, setSearchString }) =
       <div className="menu-header">
         <h2>Menu</h2>
       </div>
-      <div className="menu-item" onClick={() => {
-        setCurrentPage('yourSongs');
-      }}>
+      <div className="menu-item" onClick={() => handleMenuItemClick('yourSongs')}>
         My Songs
       </div>
-      <div className="menu-item" onClick={() => {
-        setCurrentPage('newSong');
-      }}>
+      <div className="menu-item" onClick={() => handleMenuItemClick('newSong')}>
         New Song
       </div>
-      <input type="text" className="menu-search" placeholder="Search songs..." />
-      <div className="menu-item" onClick={() => {
-        setSearchString(document.querySelector('.menu-search').value);
-        setCurrentPage('searchResults');
-      }}>
+      <input type="text" className="menu-search" placeholder="Search songs..." onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          handleSearch();
+        }
+      }} />
+      <div className="menu-item" onClick={() => handleSearch()}>
         Search
       </div>
     </div>

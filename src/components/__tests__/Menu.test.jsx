@@ -94,4 +94,86 @@ describe('Menu', () => {
     expect(setSearchString).toHaveBeenCalledWith('test query')
     expect(setCurrentPage).toHaveBeenCalledWith('searchResults')
   })
+
+  describe('menu closing behavior', () => {
+    it('closes menu when My Songs is clicked', () => {
+      const toggleMenu = vi.fn()
+      render(<Menu {...defaultProps} toggleMenu={toggleMenu} />)
+
+      fireEvent.click(screen.getByText('My Songs'))
+
+      expect(toggleMenu).toHaveBeenCalled()
+    })
+
+    it('closes menu when New Song is clicked', () => {
+      const toggleMenu = vi.fn()
+      render(<Menu {...defaultProps} toggleMenu={toggleMenu} />)
+
+      fireEvent.click(screen.getByText('New Song'))
+
+      expect(toggleMenu).toHaveBeenCalled()
+    })
+
+    it('closes menu when Search is clicked', () => {
+      const toggleMenu = vi.fn()
+      render(<Menu {...defaultProps} toggleMenu={toggleMenu} />)
+
+      fireEvent.click(screen.getByText('Search'))
+
+      expect(toggleMenu).toHaveBeenCalled()
+    })
+
+    it('closes menu when clicking outside the menu', () => {
+      const toggleMenu = vi.fn()
+      render(
+        <div>
+          <div data-testid="outside">Outside element</div>
+          <Menu {...defaultProps} showMenu={true} toggleMenu={toggleMenu} />
+        </div>
+      )
+
+      fireEvent.mouseDown(screen.getByTestId('outside'))
+
+      expect(toggleMenu).toHaveBeenCalled()
+    })
+
+    it('does not close menu when clicking inside the menu', () => {
+      const toggleMenu = vi.fn()
+      render(<Menu {...defaultProps} showMenu={true} toggleMenu={toggleMenu} />)
+
+      fireEvent.mouseDown(screen.getByText('Menu'))
+
+      expect(toggleMenu).not.toHaveBeenCalled()
+    })
+
+    it('does not trigger close when menu is already closed', () => {
+      const toggleMenu = vi.fn()
+      render(
+        <div>
+          <div data-testid="outside">Outside element</div>
+          <Menu {...defaultProps} showMenu={false} toggleMenu={toggleMenu} />
+        </div>
+      )
+
+      fireEvent.mouseDown(screen.getByTestId('outside'))
+
+      expect(toggleMenu).not.toHaveBeenCalled()
+    })
+
+    it('does not trigger close when clicking the header menu toggle button', () => {
+      const toggleMenu = vi.fn()
+      render(
+        <div>
+          <div className="header-menu" data-testid="menu-toggle">
+            <span>☰</span>
+          </div>
+          <Menu {...defaultProps} showMenu={true} toggleMenu={toggleMenu} />
+        </div>
+      )
+
+      fireEvent.mouseDown(screen.getByTestId('menu-toggle'))
+
+      expect(toggleMenu).not.toHaveBeenCalled()
+    })
+  })
 })
