@@ -27,7 +27,7 @@ const Menu = ({ user, showMenu, toggleMenu, setCurrentPage, setSearchString }) =
     setSearchString(document.querySelector('.menu-search').value);
     setCurrentPage('searchResults');
     toggleMenu();
-    document.querySelector('.menu-search').value === '';
+    document.querySelector('.menu-search').value = '';
   }
 
   if (!user) return null;
