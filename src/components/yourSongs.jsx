@@ -6,23 +6,23 @@ const YourSongs = ({ user, setCurrentPage, setCurrentSong }) => {
   const [songs, setSongs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
-  const [limit, setLimit] = React.useState(10);
+  const limit = 10;
   const [offset, setOffset] = React.useState(0);
 
-  const fetchUserSongs = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchSongs(user, limit, offset);
-      setSongs(data);
-    } catch (err) {
-      setError('Failed to fetch songs');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   React.useEffect(() => {
+    const fetchUserSongs = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchSongs(user, limit, offset);
+        setSongs(data);
+      } catch {
+        setError('Failed to fetch songs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (user) {
       fetchUserSongs();
     }

@@ -1,7 +1,5 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
-import { useState } from 'react';
 
 const GoogleAuth = ({ setUser }) => {
   const setCookie = (name, value, days) => {
@@ -11,7 +9,6 @@ const GoogleAuth = ({ setUser }) => {
   };
 
   const onSuccess = async (credentialResponse) => {
-    const decoded = jwtDecode(credentialResponse.credential);
     
     const res = await fetch('http://localhost:3000/api/auth/google', {
         method: 'POST',

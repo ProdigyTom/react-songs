@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import Login from '../login'
 
 vi.mock('../googleAuth', () => ({
-  default: ({ setUser }) => <div data-testid="google-auth">GoogleAuth Mock</div>
+  default: () => <div data-testid="google-auth">GoogleAuth Mock</div>
 }))
 
 vi.mock('../../css/login.css', () => ({}))

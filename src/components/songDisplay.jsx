@@ -49,7 +49,7 @@ const SongDisplay = ({ user, song }) => {
     };
 
     getTab();
-  }, [song.id]);
+  }, [user, song.id]);
 
   return (
     <div className="song-display">

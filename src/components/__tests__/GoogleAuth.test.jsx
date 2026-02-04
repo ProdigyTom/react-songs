@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import GoogleAuth from '../googleAuth'
 
 vi.mock('@react-oauth/google', () => ({
-  GoogleLogin: ({ onSuccess, onError }) => (
+  GoogleLogin: ({ onSuccess }) => (
     <button
       data-testid="google-login-button"
       onClick={() => onSuccess({ credential: 'mock-credential' })}
@@ -23,7 +23,7 @@ vi.mock('jwt-decode', () => ({
 describe('GoogleAuth', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    global.fetch = vi.fn()
+    globalThis.fetch = vi.fn()
     Object.defineProperty(document, 'cookie', {
       writable: true,
       value: '',
@@ -36,7 +36,7 @@ describe('GoogleAuth', () => {
   })
 
   it('calls API on successful Google login', async () => {
-    global.fetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({ name: 'Test User', email: 'test@example.com' }),
     })
@@ -47,7 +47,7 @@ describe('GoogleAuth', () => {
     screen.getByTestId('google-login-button').click()
 
     await vi.waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(globalThis.fetch).toHaveBeenCalledWith(
         'http://localhost:3000/api/auth/google',
         expect.objectContaining({
           method: 'POST',
@@ -60,7 +60,7 @@ describe('GoogleAuth', () => {
 
   it('sets user and cookie on successful API response', async () => {
     const userData = { name: 'Test User', email: 'test@example.com', session_jwt: 'jwt123' }
-    global.fetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve(userData),
     })
@@ -76,7 +76,7 @@ describe('GoogleAuth', () => {
   })
 
   it('does not call setUser when API returns error', async () => {
-    global.fetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: false,
       status: 401,
     })
@@ -87,7 +87,7 @@ describe('GoogleAuth', () => {
     screen.getByTestId('google-login-button').click()
 
     await vi.waitFor(() => {
-      expect(global.fetch).toHaveBeenCalled()
+      expect(globalThis.fetch).toHaveBeenCalled()
     })
 
     expect(setUser).not.toHaveBeenCalled()
