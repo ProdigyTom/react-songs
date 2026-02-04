@@ -24,10 +24,12 @@ const Menu = ({ user, showMenu, toggleMenu, setCurrentPage, setSearchString }) =
   }
 
   function handleSearch() {
-    setSearchString(document.querySelector('.menu-search').value);
+    const searchField = document.querySelector('.menu-search')
+    setSearchString(searchField.value);
     setCurrentPage('searchResults');
     toggleMenu();
-    document.querySelector('.menu-search').value = '';
+    searchField.value = '';
+    searchField.blur();
   }
 
   if (!user) return null;

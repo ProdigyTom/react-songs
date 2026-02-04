@@ -36,4 +36,16 @@ const fetchTabForSong = async (user, songId) => {
   return response.json();
 };
 
-export { fetchSongs, fetchSearchSongs, fetchTabForSong };
+const fetchVideosForSong = async (user, songId) => {
+  const response = await fetch(`${API_URL}/videos/${songId}`, {
+    headers: {
+      'Authorization': `Bearer ${user.session_jwt}`
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch videos');
+  }
+  return response.json();
+};
+
+export { fetchSongs, fetchSearchSongs, fetchTabForSong, fetchVideosForSong };

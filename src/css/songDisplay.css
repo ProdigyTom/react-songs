@@ -7,7 +7,8 @@
 }
 
 .tab-container {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: row;
 }
@@ -15,6 +16,9 @@
 .buttons {
   margin-right: 10px;
   align-self: flex-end;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .plus-minus {
@@ -38,11 +42,22 @@
 }
 
 .tab {
-  width: 80vw;
+  flex: 1;
+  min-width: 0;
   height: 80vh;
 
   font-family: monospace;
   white-space: pre;
 
   background-color: var(--light-grey);
+}
+
+.video-toggle-btn {
+  margin-top: 10px;
+}
+
+.song-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 95vw;
 }

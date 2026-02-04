@@ -1,11 +1,15 @@
 import React from 'react';
 import '../css/songDisplay.css';
 import { fetchTabForSong } from '../services/api';
+import VideoPanel from './videoPanel';
 
 const SongDisplay = ({ user, song }) => {
   const [tab, setTab] = React.useState('');
   const [scrollSpeed, setScrollSpeed] = React.useState(20);
   const [isScrolling, setIsScrolling] = React.useState(false);
+  const [isVideoPanelOpen, setIsVideoPanelOpen] = React.useState(false);
+  const [videoPanelWidth, setVideoPanelWidth] = React.useState(200);
+  const [hasOpenedPanel, setHasOpenedPanel] = React.useState(false);
 
   const tabRef = React.useRef(null);
   const intervalRef = React.useRef(null);
@@ -54,15 +58,46 @@ const SongDisplay = ({ user, song }) => {
   return (
     <div className="song-display">
       <h2>{song.title} - {song.artist}</h2>
-      <div className="tab-container">
-        <div className="buttons">
-          <div className="plus-minus">
-            <div className="plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
-            <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
+      <div className="song-content-wrapper">
+        <div className="tab-container">
+          <div className="buttons">
+            <div className="plus-minus">
+              <div className="plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
+              <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
+            </div>
+            <button onClick={() => toggleScrolling()}>{isScrolling ? 'Stop' : 'Start'} Scrolling</button>
+            <button
+              className="video-toggle-btn"
+              onClick={() => {
+                if (!isVideoPanelOpen) {
+                  setHasOpenedPanel(true);
+                  // Delay opening so component mounts first, then animates
+                  requestAnimationFrame(() => setIsVideoPanelOpen(true));
+                } else {
+                  setIsVideoPanelOpen(false);
+                }
+              }}
+            >
+              {isVideoPanelOpen ? 'Hide Videos' : 'Show Videos'}
+            </button>
           </div>
-          <button onClick={() => toggleScrolling()}>{isScrolling ? 'Stop' : 'Start'} Scrolling</button>
+          <textarea
+            className="tab"
+            value={tab}
+            ref={tabRef}
+            readOnly
+          />
         </div>
-        <textarea className="tab" value={tab} ref={tabRef} readOnly />
+
+        {hasOpenedPanel && (
+          <VideoPanel
+            user={user}
+            songId={song.id}
+            isOpen={isVideoPanelOpen}
+            panelWidth={videoPanelWidth}
+            onPanelWidthChange={setVideoPanelWidth}
+          />
+        )}
       </div>
     </div>
   );
