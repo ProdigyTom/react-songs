@@ -90,7 +90,7 @@ const VideoPanel = ({ user, songId, isOpen, panelWidth, onPanelWidthChange }) =>
               className={`video-btn ${selectedVideoUrl === video.url ? 'active' : ''}`}
               onClick={() => setSelectedVideoUrl(video.url)}
             >
-              {video.video_type}
+              {video.video_type.charAt(0).toUpperCase() + video.video_type.slice(1)}
             </button>
           ))}
         </div>

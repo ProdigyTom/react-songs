@@ -6,6 +6,7 @@
   height: auto;
   background-color: var(--light-grey);
   border-left: 2px solid #ccc;
+  border-radius: 8px;
   margin-left: 10px;
   max-width: 600px;
   max-height: fit-content;
@@ -58,11 +59,12 @@
 
 .video-btn {
   padding: 10px 15px;
-  background-color: white;
-  border: 1px solid #ccc;
+  background-color: var(--light-grey);
+  border: 1px solid var(--brown);
+  color: var(--brown);
   border-radius: 4px;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   transition: background-color 0.2s;
 }
 
