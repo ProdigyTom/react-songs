@@ -1,6 +1,6 @@
 import React from 'react';
 import { fetchSearchSongs } from '../services/api';
-import '../css/searchResults.css'
+import '../css/songTable.css'
 
 const SearchResults = ({ user, searchString, setCurrentPage, setCurrentSong }) => {
   const [songs, setSongs] = React.useState([]);
@@ -32,7 +32,7 @@ const SearchResults = ({ user, searchString, setCurrentPage, setCurrentSong }) =
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="search-results">
+    <div className="song-table">
       <h2>Search Results</h2>
       <table>
         <thead>

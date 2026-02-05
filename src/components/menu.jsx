@@ -1,8 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import '../css/menu.css'
 
 const Menu = ({ user, showMenu, toggleMenu, setCurrentPage, setSearchString }) => {
   const menuRef = useRef(null);
+  const searchInputRef = useRef(null);
+  const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -24,12 +26,12 @@ const Menu = ({ user, showMenu, toggleMenu, setCurrentPage, setSearchString }) =
   }
 
   function handleSearch() {
-    const searchField = document.querySelector('.menu-search')
-    setSearchString(searchField.value);
+    if (!searchValue.trim()) return;
+    setSearchString(searchValue);
     setCurrentPage('searchResults');
     toggleMenu();
-    searchField.value = '';
-    searchField.blur();
+    setSearchValue('');
+    searchInputRef.current?.blur();
   }
 
   if (!user) return null;
@@ -50,11 +52,19 @@ const Menu = ({ user, showMenu, toggleMenu, setCurrentPage, setSearchString }) =
       <div className="menu-item" onClick={() => handleMenuItemClick('newSong')}>
         New Song
       </div>
-      <input type="text" className="menu-search" placeholder="Search songs..." onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          handleSearch();
-        }
-      }} />
+      <input
+        ref={searchInputRef}
+        type="text"
+        className="menu-search"
+        placeholder="Search songs..."
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSearch();
+          }
+        }}
+      />
       <div className="menu-item" onClick={() => handleSearch()}>
         Search
       </div>

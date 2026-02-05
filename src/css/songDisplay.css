@@ -21,6 +21,11 @@
   flex-direction: column;
 
   max-width: 150px;
+
+  @media (max-width: 768px) {
+    max-width: 60px;
+    font-size: 14px;
+  }
 }
 
 .plus-minus {
@@ -31,6 +36,12 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+  }
 }
 
 .plus {
@@ -50,6 +61,8 @@
   white-space: pre;
 
   background-color: var(--light-grey);
+
+  border-radius: 8px;
 }
 
 .song-content-wrapper {
@@ -61,6 +74,11 @@
 .transpose-buttons {
   display: flex;
   flex-direction: row;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .transpose-up, .transpose-down {
@@ -72,8 +90,25 @@
   align-items: center;
   justify-content: center;
   margin-right: 5px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 10px;
+  }
 }
 
 .button-heading {
+  font-size: 14px;
   margin-bottom: 10px;
+}
+
+.tab-error {
+  flex: 1;
+  min-width: 0;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--light-grey);
+  color: #c00;
+  font-size: 18px;
 }

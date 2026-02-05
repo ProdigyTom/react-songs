@@ -55,7 +55,7 @@ const VideoPanel = ({ user, songId, isOpen, panelWidth, onPanelWidthChange }) =>
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing]);
+  }, [isResizing, onPanelWidthChange]);
 
   return (
     <div

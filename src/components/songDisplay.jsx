@@ -50,6 +50,7 @@ function transposeTab(text, semitones) {
 
 const SongDisplay = ({ user, song }) => {
   const [tab, setTab] = React.useState('');
+  const [error, setError] = React.useState(null);
   const [scrollSpeed, setScrollSpeed] = React.useState(20);
   const [isScrolling, setIsScrolling] = React.useState(false);
   const [isVideoPanelOpen, setIsVideoPanelOpen] = React.useState(false);
@@ -89,11 +90,13 @@ const SongDisplay = ({ user, song }) => {
 
   React.useEffect(() => {
     const getTab = async () => {
+      setError(null);
       try {
         const fetchedTab = await fetchTabForSong(user, song.id);
         setTab(fetchedTab.text);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to load tab');
       }
     };
 
@@ -141,12 +144,16 @@ const SongDisplay = ({ user, song }) => {
               {isVideoPanelOpen ? 'Hide' : 'Show'}
             </button>
           </div>
-          <textarea
-            className="tab"
-            value={tab}
-            ref={tabRef}
-            readOnly
-          />
+          {error ? (
+            <div className="tab-error">{error}</div>
+          ) : (
+            <textarea
+              className="tab"
+              value={tab}
+              ref={tabRef}
+              readOnly
+            />
+          )}
         </div>
 
         {hasOpenedPanel && (

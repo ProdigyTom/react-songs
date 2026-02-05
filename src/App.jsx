@@ -18,16 +18,23 @@ function App() {
     if (parts.length === 2) return parts.pop().split(';').shift();
   };
 
+  React.useEffect(() => {
+    if (!user) {
+      const userData = getCookie('user_data');
+      if (userData) {
+        try {
+          const userDataJson = JSON.parse(userData);
+          setUser(userDataJson);
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+        }
+      }
+    }
+  }, []);
+
   const toggleMenu = () => {
     setShowMenu(prev => !prev);
   };
-
-  if (!user) {
-    const userData = getCookie('user_data');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }
 
   if (user) return (
     <div>

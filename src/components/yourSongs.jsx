@@ -1,6 +1,6 @@
 import React from 'react';
 import { fetchSongs } from '../services/api';
-import '../css/yourSongs.css'
+import '../css/songTable.css'
 
 const YourSongs = ({ user, setCurrentPage, setCurrentSong }) => {
   const [songs, setSongs] = React.useState([]);
@@ -32,7 +32,7 @@ const YourSongs = ({ user, setCurrentPage, setCurrentSong }) => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="your-songs">
+    <div className="song-table">
       <h2>Your Songs</h2>
       <table>
         <thead>

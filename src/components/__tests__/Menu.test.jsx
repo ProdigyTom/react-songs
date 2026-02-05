@@ -114,13 +114,24 @@ describe('Menu', () => {
       expect(toggleMenu).toHaveBeenCalled()
     })
 
-    it('closes menu when Search is clicked', () => {
+    it('closes menu when Search is clicked with search text', () => {
+      const toggleMenu = vi.fn()
+      render(<Menu {...defaultProps} toggleMenu={toggleMenu} />)
+
+      const searchInput = screen.getByPlaceholderText('Search songs...')
+      fireEvent.change(searchInput, { target: { value: 'test' } })
+      fireEvent.click(screen.getByText('Search'))
+
+      expect(toggleMenu).toHaveBeenCalled()
+    })
+
+    it('does not close menu when Search is clicked with empty input', () => {
       const toggleMenu = vi.fn()
       render(<Menu {...defaultProps} toggleMenu={toggleMenu} />)
 
       fireEvent.click(screen.getByText('Search'))
 
-      expect(toggleMenu).toHaveBeenCalled()
+      expect(toggleMenu).not.toHaveBeenCalled()
     })
 
     it('closes menu when clicking outside the menu', () => {

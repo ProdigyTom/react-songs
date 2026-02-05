@@ -1,33 +1,33 @@
-.search-results {
+.song-table {
   padding: 20px;
   margin-top: 100px;
 }
 
-.search-results h2 {
+.song-table h2 {
   font-size: 32px;
   margin-bottom: 20px;
   text-align: center;
 }
 
-.search-results table {
+.song-table table {
   width: 70vw;
   border-collapse: collapse;
 }
 
-.search-results th, .search-results td {
+.song-table th, .song-table td {
   padding: 12px 15px;
   border: 1px solid #ddd;
 }
 
-.search-results th {
+.song-table th {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.search-results tbody tr:hover {
+.song-table tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.search-results .pagination {
+.song-table .pagination {
   margin-top: 20px;
   display: flex;
   flex-direction: row;
@@ -35,7 +35,7 @@
   width: 100%;
 }
 
-.search-results .pagination .previous, .search-results .pagination .next {
+.song-table .pagination .previous, .song-table .pagination .next {
   padding: 10px 15px;
   border: 1px solid #ddd;
   background-color: rgba(255, 255, 255, 0.2);
@@ -43,14 +43,14 @@
   cursor: pointer;
 }
 
-.search-results .pagination .previous:hover, .search-results .pagination .next:hover {
+.song-table .pagination .previous:hover, .song-table .pagination .next:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
-.search-results .pagination .previous {
+.song-table .pagination .previous {
   margin-right: auto;
 }
 
-.search-results .pagination .next {
+.song-table .pagination .next {
   margin-left: auto;
 }
