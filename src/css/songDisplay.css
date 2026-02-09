@@ -6,6 +6,52 @@
   margin-top: 40px;
 }
 
+.title-area {
+  margin-top: 10px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  position: relative;
+
+  min-height: 40px;
+  margin-bottom: 5px;
+}
+
+.title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.video-toggle-btn {
+  margin-left: auto;
+  margin-right: 10px;
+  position: relative;
+  pointer-events: auto;
+
+  cursor: pointer;
+
+  font-size: 24px;
+  padding: 5px;
+  color: var(--brown);
+}
+
+.options-toggle-btn {
+  margin-right: auto;
+  margin-left: 10px;
+  position: relative;
+  pointer-events: auto;
+
+  cursor: pointer;
+
+  font-size: 24px;
+  padding: 5px;
+  color: var(--brown);
+}
+
 .tab-container {
   flex: 1;
   min-width: 0;
@@ -15,17 +61,32 @@
 
 .buttons {
   margin-right: 10px;
-  align-self: flex-end;
+  align-self: flex-start;
+  background-color: var(--light-grey);
 
   display: flex;
   flex-direction: column;
 
-  max-width: 150px;
+  width: 150px;
+  overflow: hidden;
+  padding: 10px;
+
+  border-radius: 8px;
+
+  color: var(--blue);
+
+  transition: width 0.3s ease, margin-right 0.3s ease;
 
   @media (max-width: 768px) {
-    max-width: 60px;
+    width: 60px;
     font-size: 14px;
   }
+}
+
+.buttons-closed {
+  width: 0;
+  margin-right: 0;
+  padding: 0;
 }
 
 .plus-minus {
@@ -55,7 +116,7 @@
 .tab {
   flex: 1;
   min-width: 0;
-  height: 80vh;
+  height: 85vh;
 
   font-family: monospace;
   white-space: pre;
@@ -74,26 +135,29 @@
 .transpose-buttons {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
+
+  font-size: 36px;
+  font-weight: bold;
+  color: var(--brown);
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
+    margin-bottom: 10px;
   }
 }
 
 .transpose-up, .transpose-down {
-  width: 70px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 5px;
+  cursor: pointer;
 
   @media (max-width: 768px) {
     margin-bottom: 10px;
   }
+}
+
+.reset-tab {
+  margin-top: 10px;
 }
 
 .button-heading {

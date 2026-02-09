@@ -1,5 +1,8 @@
 import React from 'react';
 import '../css/songDisplay.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faClipboardList } from '@fortawesome/free-solid-svg-icons'; 
 import { fetchTabForSong } from '../services/api';
 import VideoPanel from './videoPanel';
 
@@ -50,12 +53,15 @@ function transposeTab(text, semitones) {
 
 const SongDisplay = ({ user, song }) => {
   const [tab, setTab] = React.useState('');
+  const [originalTab, setOriginalTab] = React.useState('');
   const [error, setError] = React.useState(null);
   const [scrollSpeed, setScrollSpeed] = React.useState(20);
   const [isScrolling, setIsScrolling] = React.useState(false);
   const [isVideoPanelOpen, setIsVideoPanelOpen] = React.useState(false);
   const [videoPanelWidth, setVideoPanelWidth] = React.useState(200);
-  const [hasOpenedPanel, setHasOpenedPanel] = React.useState(false);
+  const [hasOpenedVideoPanel, setHasOpenedVideoPanel] = React.useState(false);
+  const [isOptionsPanelOpen, setIsOptionsPanelOpen] = React.useState(true);
+  const [hasOpenedOptionsPanel, setHasOpenedOptionsPanel] = React.useState(true);
 
   const tabRef = React.useRef(null);
   const intervalRef = React.useRef(null);
@@ -94,6 +100,7 @@ const SongDisplay = ({ user, song }) => {
       try {
         const fetchedTab = await fetchTabForSong(user, song.id);
         setTab(fetchedTab.text);
+        setOriginalTab(fetchedTab.text);
       } catch (err) {
         console.error(err);
         setError('Failed to load tab');
@@ -113,37 +120,48 @@ const SongDisplay = ({ user, song }) => {
 
   return (
     <div className="song-display">
-      <h2>{song.title} - {song.artist}</h2>
+      <div className="title-area">
+        <FontAwesomeIcon icon={faClipboardList} className="options-toggle-btn" onClick={() => {
+          if (!isOptionsPanelOpen) {
+            setHasOpenedOptionsPanel(true);
+            // Delay opening so component mounts first, then animates
+            requestAnimationFrame(() => setIsOptionsPanelOpen(true));
+          } else {
+            setIsOptionsPanelOpen(false);
+          }
+        }} />
+        <h2 className="title">{song.title} - {song.artist}</h2>
+        <FontAwesomeIcon icon={faVideo} className="video-toggle-btn" onClick={() => {
+          if (!isVideoPanelOpen) {
+            setHasOpenedVideoPanel(true);
+            // Delay opening so component mounts first, then animates
+              requestAnimationFrame(() => setIsVideoPanelOpen(true));
+            } else {
+              setIsVideoPanelOpen(false);
+            }
+          }}
+         />
+      </div>
       <div className="song-content-wrapper">
         <div className="tab-container">
-          <div className="buttons">
-            <h3 className="button-heading">Transpose:</h3>
-            <div className="transpose-buttons">
-              <button className="transpose-up" onClick={handleTransposeUp}>Up +</button>
-              <button className="transpose-down" onClick={handleTransposeDown}>Down -</button>
+          {hasOpenedOptionsPanel && (
+            <div className={`buttons${!isOptionsPanelOpen ? ' buttons-closed' : ''}`}>
+              <button className="edit-tab" onClick={() => {}}>Edit Tab</button>
+              <h3 className="button-heading">Transpose:</h3>
+              <div className="transpose-buttons">
+                <div className="transpose-up" onClick={handleTransposeUp}>+</div>
+                <div className="transpose-down" onClick={handleTransposeDown}>-</div>
+              </div>
+              <button className="reset-tab" onClick={() => setTab(originalTab)}>Reset</button>
+              <h3 className="button-heading">Scrolling:</h3>
+              <div className="plus-minus">
+                <div className="plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
+                <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
+              </div>
+              <button onClick={() => toggleScrolling()}>{isScrolling ? 'Stop' : 'Start'}</button>
             </div>
-            <h3 className="button-heading">Scrolling:</h3>
-            <div className="plus-minus">
-              <div className="plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
-              <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
-            </div>
-            <button onClick={() => toggleScrolling()}>{isScrolling ? 'Stop' : 'Start'}</button>
-            <h3 className="button-heading">Videos:</h3>
-            <button
-              className="video-toggle-btn"
-              onClick={() => {
-                if (!isVideoPanelOpen) {
-                  setHasOpenedPanel(true);
-                  // Delay opening so component mounts first, then animates
-                  requestAnimationFrame(() => setIsVideoPanelOpen(true));
-                } else {
-                  setIsVideoPanelOpen(false);
-                }
-              }}
-            >
-              {isVideoPanelOpen ? 'Hide' : 'Show'}
-            </button>
-          </div>
+          )}
+
           {error ? (
             <div className="tab-error">{error}</div>
           ) : (
@@ -156,7 +174,7 @@ const SongDisplay = ({ user, song }) => {
           )}
         </div>
 
-        {hasOpenedPanel && (
+        {hasOpenedVideoPanel && (
           <VideoPanel
             user={user}
             songId={song.id}
