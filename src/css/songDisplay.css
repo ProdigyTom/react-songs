@@ -24,6 +24,10 @@
   margin: 0;
   pointer-events: none;
   z-index: 1;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 }
 
 .video-toggle-btn {
@@ -75,7 +79,7 @@
 
   color: var(--blue);
 
-  transition: width 0.3s ease, margin-right 0.3s ease;
+  transition: width 0.3s ease, margin-right 0.3s ease, padding 0.3s ease;
 
   @media (max-width: 768px) {
     width: 60px;
@@ -97,6 +101,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+
+  margin-bottom: 10px;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -124,6 +130,10 @@
   background-color: var(--light-grey);
 
   border-radius: 8px;
+
+  @media (max-height: 500px) {
+    height: 60vh;
+  }
 }
 
 .song-content-wrapper {
@@ -141,10 +151,11 @@
   font-weight: bold;
   color: var(--brown);
 
+  margin-bottom: 10px;
+
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
-    margin-bottom: 10px;
   }
 }
 
@@ -154,10 +165,6 @@
   @media (max-width: 768px) {
     margin-bottom: 10px;
   }
-}
-
-.reset-tab {
-  margin-top: 10px;
 }
 
 .button-heading {

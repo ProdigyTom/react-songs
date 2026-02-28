@@ -9,7 +9,7 @@ import './css/App.css';
 function App() {
   const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
-  const [currentPage, setCurrentPage] = useState('yourSongs');
+  const [currentPage, setCurrentPage] = useState(() => localStorage.getItem('currentPage') || 'yourSongs');
   const [searchString, setSearchString] = useState('');
 
   const getCookie = (name) => {
@@ -31,6 +31,10 @@ function App() {
       }
     }
   }, []);
+
+  React.useEffect(() => {
+    localStorage.setItem('currentPage', currentPage);
+  }, [currentPage]);
 
   const toggleMenu = () => {
     setShowMenu(prev => !prev);

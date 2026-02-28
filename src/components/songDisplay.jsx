@@ -51,7 +51,7 @@ function transposeTab(text, semitones) {
   }).join('\n');
 }
 
-const SongDisplay = ({ user, song }) => {
+const SongDisplay = ({ user, song, setCurrentPage }) => {
   const [tab, setTab] = React.useState('');
   const [originalTab, setOriginalTab] = React.useState('');
   const [error, setError] = React.useState(null);
@@ -146,14 +146,14 @@ const SongDisplay = ({ user, song }) => {
         <div className="tab-container">
           {hasOpenedOptionsPanel && (
             <div className={`buttons${!isOptionsPanelOpen ? ' buttons-closed' : ''}`}>
-              <button className="edit-tab" onClick={() => {}}>Edit Tab</button>
+              <button className="edit-tab" onClick={() => setCurrentPage('editSong')}>Edit Song</button>
               <h3 className="button-heading">Transpose:</h3>
               <div className="transpose-buttons">
                 <div className="transpose-up" onClick={handleTransposeUp}>+</div>
                 <div className="transpose-down" onClick={handleTransposeDown}>-</div>
               </div>
               <button className="reset-tab" onClick={() => setTab(originalTab)}>Reset</button>
-              <h3 className="button-heading">Scrolling:</h3>
+              <h3 className="button-heading">Scroll:</h3>
               <div className="plus-minus">
                 <div className="plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
                 <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>

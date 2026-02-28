@@ -54,3 +54,7 @@
 .song-table .pagination .next {
   margin-left: auto;
 }
+
+.delete-song {
+  cursor: pointer;
+}

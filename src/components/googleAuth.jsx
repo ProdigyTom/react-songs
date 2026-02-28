@@ -31,7 +31,6 @@ const GoogleAuth = ({ setUser }) => {
     <GoogleLogin
       onSuccess={onSuccess}
       onError={onError}
-      useOneTap
     />
   );
 };

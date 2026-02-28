@@ -1,5 +1,5 @@
 import React from 'react';
-import { fetchSongs } from '../services/api';
+import { fetchSongs, deleteSong } from '../services/api';
 import '../css/songTable.css'
 
 const YourSongs = ({ user, setCurrentPage, setCurrentSong }) => {
@@ -49,6 +49,12 @@ const YourSongs = ({ user, setCurrentPage, setCurrentSong }) => {
             }}>
               <td>{song.title}</td>
               <td>{song.artist}</td>
+              <td><b onClick={(e) => { 
+                e.stopPropagation(); 
+                deleteSong(user, song.id).then((response) => {
+                  setSongs(prev => prev.filter(s => s.id !== song.id));
+                });
+              }} className="delete-song">X</b></td>
             </tr>
           ))}
         </tbody>
