@@ -12,5 +12,6 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
+    allowedHosts: ['localhost', 'song-project.xyz', 'www.song-project.xyz'],
   }
 })
