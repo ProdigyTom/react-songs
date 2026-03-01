@@ -1,10 +1,12 @@
 import React from 'react';
 import '../css/songForm.css';
 import { fetchTabForSong, fetchVideosForSong, editSong, createNewSong } from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 const MAX_VIDEOS = 5;
 
 const EditSong = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
+  const showToast = useToast();
   const [tab, setTab] = React.useState('');
   const [videos, setVideos] = React.useState([{ video_type: '', url: '' }]);
   const [title, setTitle] = React.useState(song?.title || '');
@@ -94,7 +96,7 @@ const EditSong = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
               setCurrentSong(response.song);
               setCurrentPage('songDisplay');
             } catch (error) {
-              console.error("Error submitting song:", error);
+              showToast('Failed to save song. Please try again.');
             }
           }}>Submit</button>
         </div>

@@ -58,3 +58,8 @@
 .delete-song {
   cursor: pointer;
 }
+
+.delete-cell {
+  text-align: center;
+  width: 20px;
+}

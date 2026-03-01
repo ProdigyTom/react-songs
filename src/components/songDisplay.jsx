@@ -5,6 +5,7 @@ import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import { faClipboardList } from '@fortawesome/free-solid-svg-icons'; 
 import { fetchTabForSong } from '../services/api';
 import VideoPanel from './videoPanel';
+import { useToast } from '../context/ToastContext';
 
 // Chromatic scale using conventional notation (sharps except Eb)
 const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#'];
@@ -52,6 +53,7 @@ function transposeTab(text, semitones) {
 }
 
 const SongDisplay = ({ user, song, setCurrentPage }) => {
+  const showToast = useToast();
   const [tab, setTab] = React.useState('');
   const [originalTab, setOriginalTab] = React.useState('');
   const [error, setError] = React.useState(null);
@@ -102,7 +104,7 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
         setTab(fetchedTab.text);
         setOriginalTab(fetchedTab.text);
       } catch (err) {
-        console.error(err);
+        showToast('Failed to load tab');
         setError('Failed to load tab');
       }
     };

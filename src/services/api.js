@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://localhost:3001/api';
 
 const fetchSongs = async (user, limit = 10, offset = 0) => {
   const response = await fetch(`${API_URL}/songs?limit=${limit}&offset=${offset}`, {

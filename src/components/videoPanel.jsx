@@ -1,8 +1,10 @@
 import React from 'react';
 import '../css/videoPanel.css';
 import { fetchVideosForSong } from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 const VideoPanel = ({ user, songId, isOpen, panelWidth, onPanelWidthChange }) => {
+  const showToast = useToast();
   const [videos, setVideos] = React.useState([]);
   const [selectedVideoUrl, setSelectedVideoUrl] = React.useState('');
   const [isResizing, setIsResizing] = React.useState(false);
@@ -22,7 +24,7 @@ const VideoPanel = ({ user, songId, isOpen, panelWidth, onPanelWidthChange }) =>
           setSelectedVideoUrl(videoList[0].url);
         }
       } catch (error) {
-        console.error('Failed to fetch videos:', error);
+        showToast('Failed to fetch videos');
         setVideos([]);
       }
     };

@@ -1,13 +1,16 @@
 import React from 'react';
 import { fetchSongs, deleteSong } from '../services/api';
-import '../css/songTable.css'
+import '../css/songTable.css';
+import { useToast } from '../context/ToastContext';
 
 const YourSongs = ({ user, setCurrentPage, setCurrentSong }) => {
+  const showToast = useToast();
   const [songs, setSongs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
   const limit = 10;
   const [offset, setOffset] = React.useState(0);
+  const [refreshKey, setRefreshKey] = React.useState(0);
 
   React.useEffect(() => {
     const fetchUserSongs = async () => {
@@ -26,7 +29,7 @@ const YourSongs = ({ user, setCurrentPage, setCurrentSong }) => {
     if (user) {
       fetchUserSongs();
     }
-  }, [user, offset, limit]);
+  }, [user, offset, limit, refreshKey]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -49,10 +52,12 @@ const YourSongs = ({ user, setCurrentPage, setCurrentSong }) => {
             }}>
               <td>{song.title}</td>
               <td>{song.artist}</td>
-              <td><b onClick={(e) => { 
+              <td className="delete-cell"><b onClick={(e) => { 
                 e.stopPropagation(); 
                 deleteSong(user, song.id).then((response) => {
-                  setSongs(prev => prev.filter(s => s.id !== song.id));
+                  setRefreshKey(prev => prev + 1);
+                }).catch(() => {
+                  showToast('Failed to delete song');
                 });
               }} className="delete-song">X</b></td>
             </tr>

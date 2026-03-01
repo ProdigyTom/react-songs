@@ -4,7 +4,9 @@ import { useState } from 'react';
 import Header from './components/Header';
 import AppAuthenticated from './components/appAuthenticated';
 import Menu from './components/menu';
+import { ToastProvider } from './context/ToastContext';
 import './css/App.css';
+import './css/toast.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,11 +43,13 @@ function App() {
   };
 
   if (user) return (
-    <div>
-      <Header user={user} setUser={setUser} toggleMenu={toggleMenu} />
-      <AppAuthenticated user={user} currentPage={currentPage} setCurrentPage={setCurrentPage} searchString={searchString} />
-      <Menu user={user} showMenu={showMenu} toggleMenu={toggleMenu} setCurrentPage={setCurrentPage} setSearchString={setSearchString} />
-    </div>
+    <ToastProvider>
+      <div>
+        <Header user={user} setUser={setUser} toggleMenu={toggleMenu} />
+        <AppAuthenticated user={user} currentPage={currentPage} setCurrentPage={setCurrentPage} searchString={searchString} />
+        <Menu user={user} showMenu={showMenu} toggleMenu={toggleMenu} setCurrentPage={setCurrentPage} setSearchString={setSearchString} />
+      </div>
+    </ToastProvider>
   )
   else return (
     <div className="app">
