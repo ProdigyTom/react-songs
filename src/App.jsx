@@ -1,7 +1,7 @@
 import React from 'react';
-import Login from './components/login';
+import Login from './components/login.jsx';
 import { useState } from 'react';
-import Header from './components/Header';
+import Header from './components/header';
 import AppAuthenticated from './components/appAuthenticated';
 import Menu from './components/menu';
 import { ToastProvider } from './context/ToastContext';
