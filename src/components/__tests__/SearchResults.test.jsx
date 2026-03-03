@@ -4,7 +4,7 @@ import SearchResults from '../searchResults'
 import * as api from '../../services/api'
 
 vi.mock('../../services/api')
-vi.mock('../../css/searchResults.css', () => ({}))
+vi.mock('../../context/ToastContext', () => ({ useToast: () => vi.fn() }))
 
 describe('SearchResults', () => {
   const mockUser = { name: 'Test User', session_jwt: 'token123' }

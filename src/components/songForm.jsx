@@ -5,25 +5,30 @@ import { useToast } from '../context/ToastContext';
 
 const MAX_VIDEOS = 5;
 
-const EditSong = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
+const SongForm = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
   const showToast = useToast();
   const [tab, setTab] = React.useState('');
   const [videos, setVideos] = React.useState([{ video_type: '', url: '' }]);
   const [title, setTitle] = React.useState(song?.title || '');
   const [artist, setArtist] = React.useState(song?.artist || '');
+  const [submitting, setSubmitting] = React.useState(false);
 
   React.useEffect(() => {
     if (!song) return;
     const fetchTab = async () => {
-      const fetchedTab = await fetchTabForSong(user, song.id);
-      const fetchedVideos = await fetchVideosForSong(user, song.id);
-      setTab(fetchedTab.text);
-      setVideos(fetchedVideos);
+      try {
+        const fetchedTab = await fetchTabForSong(user, song.id);
+        const fetchedVideos = await fetchVideosForSong(user, song.id);
+        setTab(fetchedTab.text);
+        setVideos(fetchedVideos);
+      } catch {
+        showToast('Failed to load song data. Please try again.');
+      }
     };
     fetchTab();
     setTitle(song?.title || '');
     setArtist(song?.artist || '');
-  }, [song?.id]);
+  }, [song?.id, user]);
 
   const updateVideo = (index, field, value) => {
     setVideos(prev => prev.map((video, i) => i === index ? { ...video, [field]: value } : video));
@@ -84,7 +89,16 @@ const EditSong = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
           {videos.length < MAX_VIDEOS && (
             <button type="button" className="add-video-btn" onClick={addVideo}>+ Add Video</button>
           )}
-          <button type="button" className="submit-button" onClick={async () => {
+          <button type="button" className="submit-button" disabled={submitting} onClick={async () => {
+            if (!title.trim()) {
+              showToast('Title is required.');
+              return;
+            }
+            if (!artist.trim()) {
+              showToast('Artist is required.');
+              return;
+            }
+            setSubmitting(true);
             try {
               let response = null;
               const completedVideos = videos.filter(video => video.video_type && video.url);
@@ -97,8 +111,9 @@ const EditSong = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
               setCurrentPage('songDisplay');
             } catch (error) {
               showToast('Failed to save song. Please try again.');
+              setSubmitting(false);
             }
-          }}>Submit</button>
+          }}>{submitting ? 'Saving...' : 'Submit'}</button>
         </div>
       </div>
       <div className="tab-section">
@@ -113,4 +128,4 @@ const EditSong = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
   );
 };
 
-export default EditSong;
+export default SongForm;

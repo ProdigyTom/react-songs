@@ -29,7 +29,7 @@ const AppAuthenticated = ({ user, currentPage, setCurrentPage, searchString }) =
     if ((currentPage === 'songDisplay' || currentPage === 'editSong') && !currentSong) {
       setCurrentPage('yourSongs');
     }
-  }, []);
+  }, [currentPage, currentSong, setCurrentPage]);
 
   return (
     <div className="app-authenticated">

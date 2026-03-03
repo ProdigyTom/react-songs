@@ -48,7 +48,7 @@ describe('GoogleAuth', () => {
 
     await vi.waitFor(() => {
       expect(globalThis.fetch).toHaveBeenCalledWith(
-        'http://localhost:3000/api/auth/google',
+        '/api/auth/google',
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

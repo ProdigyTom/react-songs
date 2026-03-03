@@ -1,4 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
+import React from 'react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import AppAuthenticated from '../appAuthenticated'
 
@@ -17,6 +18,18 @@ vi.mock('../songDisplay', () => ({
 vi.mock('../../css/appAuthenticated.css', () => ({}))
 
 describe('AppAuthenticated', () => {
+  beforeEach(() => {
+    vi.stubGlobal('localStorage', {
+      getItem: vi.fn().mockReturnValue(null),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+    })
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   const mockUser = { name: 'Test User' }
   const defaultProps = {
     user: mockUser,

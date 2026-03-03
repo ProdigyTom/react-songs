@@ -1,17 +1,14 @@
 import React from 'react';
-import { fetchSearchSongs, deleteSong } from '../services/api';
-import '../css/songTable.css';
-import { useToast } from '../context/ToastContext';
+import { fetchSearchSongs } from '../services/api';
+import SongTable from './songTable.jsx';
 
 const SearchResults = ({ user, searchString, setCurrentPage, setCurrentSong }) => {
-  const showToast = useToast();
   const [songs, setSongs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
   const limit = 10;
   const [offset, setOffset] = React.useState(0);
   const [refreshKey, setRefreshKey] = React.useState(0);
-  const [confirmDeleteId, setConfirmDeleteId] = React.useState(null);
 
   React.useEffect(() => {
     const fetchUserSearch = async () => {
@@ -32,63 +29,20 @@ const SearchResults = ({ user, searchString, setCurrentPage, setCurrentSong }) =
     }
   }, [user, offset, limit, searchString, refreshKey]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-
   return (
-    <div className="song-table">
-      <h2>Search Results</h2>
-      <table className="song-table-table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Artist</th>
-          </tr>
-        </thead>
-        <tbody>
-          { songs.map(song => (
-            <tr key={song.id} onClick={() => { 
-              setCurrentPage('songDisplay');
-              setCurrentSong(song);
-            }}>
-              <td>{song.title}</td>
-              <td>{song.artist}</td>
-              <td className="delete-cell" onClick={(e) => e.stopPropagation()}>
-                {confirmDeleteId === song.id ? (
-                  <>
-                    <span className="delete-confirm" onClick={() => {
-                      deleteSong(user, song.id).then(() => {
-                        setConfirmDeleteId(null);
-                        setRefreshKey(prev => prev + 1);
-                      }).catch(() => {
-                        showToast('Failed to delete song');
-                        setConfirmDeleteId(null);
-                      });
-                    }}>Sure?</span>
-                    {' '}
-                    <span className="delete-cancel" onClick={() => setConfirmDeleteId(null)}>Cancel</span>
-                  </>
-                ) : (
-                  <b className="delete-song" onClick={() => setConfirmDeleteId(song.id)}>X</b>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="pagination">
-        {offset > 0 && (
-          <button className="previous" onClick={() => {
-            setOffset(prev => Math.max(0, prev - limit));
-          }}>&lt;- Previous page</button>
-        )}
-        { songs.length === limit && (
-          <button className="next" onClick={() => {
-            setOffset(prev => prev + limit);
-          }}>Next page -&gt;</button>
-        )}
-      </div>
-    </div>
+    <SongTable
+      title="Search Results"
+      songs={songs}
+      loading={loading}
+      error={error}
+      limit={limit}
+      offset={offset}
+      setOffset={setOffset}
+      user={user}
+      setCurrentPage={setCurrentPage}
+      setCurrentSong={setCurrentSong}
+      onDeleteSuccess={() => setRefreshKey(prev => prev + 1)}
+    />
   );
 };
 

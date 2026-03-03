@@ -4,7 +4,7 @@ import YourSongs from '../yourSongs'
 import * as api from '../../services/api'
 
 vi.mock('../../services/api')
-vi.mock('../../css/yourSongs.css', () => ({}))
+vi.mock('../../context/ToastContext', () => ({ useToast: () => vi.fn() }))
 
 describe('YourSongs', () => {
   const mockUser = { name: 'Test User', session_jwt: 'token123' }

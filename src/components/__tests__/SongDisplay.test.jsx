@@ -4,8 +4,7 @@ import SongDisplay from '../songDisplay'
 import * as api from '../../services/api'
 
 vi.mock('../../services/api')
-vi.mock('../../css/songDisplay.css', () => ({}))
-vi.mock('../../css/videoPanel.css', () => ({}))
+vi.mock('../../context/ToastContext', () => ({ useToast: () => vi.fn() }))
 
 describe('SongDisplay', () => {
   const mockUser = { name: 'Test User', session_jwt: 'token123' }
@@ -22,7 +21,6 @@ describe('SongDisplay', () => {
     api.fetchVideosForSong.mockResolvedValue(mockVideos)
   })
 
-  // Helper to wait for the initial fetch to complete
   const waitForFetch = () => waitFor(() => {
     expect(api.fetchTabForSong).toHaveBeenCalled()
   })
@@ -57,57 +55,53 @@ describe('SongDisplay', () => {
     expect(screen.getByRole('textbox')).toHaveAttribute('readonly')
   })
 
-  it('shows Start Scrolling button initially', async () => {
+  it('shows Start button for scrolling initially', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    expect(screen.getByRole('button', { name: /start scrolling/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
   })
 
-  it('toggles to Stop Scrolling when clicked', async () => {
+  it('toggles to Stop when scrolling starts', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    fireEvent.click(screen.getByRole('button', { name: /start scrolling/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
 
-    expect(screen.getByRole('button', { name: /stop scrolling/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Stop' })).toBeInTheDocument()
   })
 
-  it('toggles back to Start Scrolling when clicked again', async () => {
+  it('toggles back to Start when scrolling stops', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    fireEvent.click(screen.getByRole('button', { name: /start scrolling/i }))
-    fireEvent.click(screen.getByRole('button', { name: /stop scrolling/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Stop' }))
 
-    expect(screen.getByRole('button', { name: /start scrolling/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
   })
 
-  it('renders plus button for speed increase', async () => {
+  it('renders speed increase control', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    expect(screen.getByText('+')).toBeInTheDocument()
+    expect(document.querySelector('.plus')).toBeInTheDocument()
   })
 
-  it('renders minus button for speed decrease', async () => {
+  it('renders speed decrease control', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    expect(screen.getByText('-')).toBeInTheDocument()
+    expect(document.querySelector('.minus')).toBeInTheDocument()
   })
 
   it('handles fetch error gracefully', async () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     api.fetchTabForSong.mockRejectedValue(new Error('Network error'))
-
     render(<SongDisplay user={mockUser} song={mockSong} />)
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalled()
+      expect(screen.getByText('Failed to load tab')).toBeInTheDocument()
     })
-
-    consoleSpy.mockRestore()
   })
 
   it('refetches when song.id changes', async () => {
@@ -127,27 +121,18 @@ describe('SongDisplay', () => {
   })
 
   describe('Video Panel', () => {
-    it('renders Show Videos button', async () => {
+    it('renders video toggle icon', async () => {
       render(<SongDisplay user={mockUser} song={mockSong} />)
       await waitForFetch()
 
-      expect(screen.getByRole('button', { name: /show videos/i })).toBeInTheDocument()
+      expect(document.querySelector('.video-toggle-btn')).toBeInTheDocument()
     })
 
-    it('opens video panel when toggle button is clicked', async () => {
+    it('mounts video panel and fetches videos when toggle icon is clicked', async () => {
       render(<SongDisplay user={mockUser} song={mockSong} />)
       await waitForFetch()
 
-      fireEvent.click(screen.getByRole('button', { name: /show videos/i }))
-
-      expect(screen.getByRole('button', { name: /hide videos/i })).toBeInTheDocument()
-    })
-
-    it('fetches videos when panel opens', async () => {
-      render(<SongDisplay user={mockUser} song={mockSong} />)
-      await waitForFetch()
-
-      fireEvent.click(screen.getByRole('button', { name: /show videos/i }))
+      fireEvent.click(document.querySelector('.video-toggle-btn'))
 
       await waitFor(() => {
         expect(api.fetchVideosForSong).toHaveBeenCalledWith(mockUser, mockSong.id)
@@ -158,7 +143,7 @@ describe('SongDisplay', () => {
       render(<SongDisplay user={mockUser} song={mockSong} />)
       await waitForFetch()
 
-      fireEvent.click(screen.getByRole('button', { name: /show videos/i }))
+      fireEvent.click(document.querySelector('.video-toggle-btn'))
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Official Video' })).toBeInTheDocument()
@@ -171,7 +156,7 @@ describe('SongDisplay', () => {
       render(<SongDisplay user={mockUser} song={mockSong} />)
       await waitForFetch()
 
-      fireEvent.click(screen.getByRole('button', { name: /show videos/i }))
+      fireEvent.click(document.querySelector('.video-toggle-btn'))
 
       await waitFor(() => {
         expect(screen.getByText(/no videos available/i)).toBeInTheDocument()
@@ -182,7 +167,7 @@ describe('SongDisplay', () => {
       render(<SongDisplay user={mockUser} song={mockSong} />)
       await waitForFetch()
 
-      fireEvent.click(screen.getByRole('button', { name: /show videos/i }))
+      fireEvent.click(document.querySelector('.video-toggle-btn'))
 
       await waitFor(() => {
         const iframe = document.querySelector('iframe')
@@ -194,7 +179,7 @@ describe('SongDisplay', () => {
       render(<SongDisplay user={mockUser} song={mockSong} />)
       await waitForFetch()
 
-      fireEvent.click(screen.getByRole('button', { name: /show videos/i }))
+      fireEvent.click(document.querySelector('.video-toggle-btn'))
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Live Version' })).toBeInTheDocument()
@@ -206,17 +191,21 @@ describe('SongDisplay', () => {
       expect(iframe).toHaveAttribute('src', 'https://www.youtube.com/embed/def456')
     })
 
-    it('closes video panel when toggle button is clicked again', async () => {
+    it('collapses video panel when toggle icon is clicked again', async () => {
       render(<SongDisplay user={mockUser} song={mockSong} />)
       await waitForFetch()
 
-      fireEvent.click(screen.getByRole('button', { name: /show videos/i }))
+      const toggleIcon = document.querySelector('.video-toggle-btn')
+      fireEvent.click(toggleIcon)
+
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /hide videos/i })).toBeInTheDocument()
+        expect(document.querySelector('.video-panel')).toBeInTheDocument()
       })
 
-      fireEvent.click(screen.getByRole('button', { name: /hide videos/i }))
-      expect(screen.getByRole('button', { name: /show videos/i })).toBeInTheDocument()
+      fireEvent.click(toggleIcon)
+
+      // Panel stays mounted but collapses to width 0
+      expect(document.querySelector('.video-panel').style.width).toBe('0px')
     })
   })
 })

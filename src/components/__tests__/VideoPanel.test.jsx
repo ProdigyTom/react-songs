@@ -4,7 +4,7 @@ import VideoPanel from '../videoPanel'
 import * as api from '../../services/api'
 
 vi.mock('../../services/api')
-vi.mock('../../css/videoPanel.css', () => ({}))
+vi.mock('../../context/ToastContext', () => ({ useToast: () => vi.fn() }))
 
 describe('VideoPanel', () => {
   const mockUser = { name: 'Test User', session_jwt: 'token123' }
@@ -95,17 +95,13 @@ describe('VideoPanel', () => {
   })
 
   it('handles fetch error gracefully', async () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     api.fetchVideosForSong.mockRejectedValue(new Error('Network error'))
 
     renderVideoPanel()
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalled()
+      expect(screen.getByText(/no videos available/i)).toBeInTheDocument()
     })
-
-    expect(screen.getByText(/no videos available/i)).toBeInTheDocument()
-    consoleSpy.mockRestore()
   })
 
   it('refetches when songId changes', async () => {
