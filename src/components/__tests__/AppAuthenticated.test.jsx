@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import AppAuthenticated from '../appAuthenticated'
 
 vi.mock('../yourSongs', () => ({
@@ -13,6 +13,14 @@ vi.mock('../searchResults', () => ({
 
 vi.mock('../songDisplay', () => ({
   default: ({ song }) => <div data-testid="song-display">SongDisplay: {song?.title}</div>
+}))
+
+vi.mock('../editSong', () => ({
+  default: ({ song }) => <div data-testid="edit-song">EditSong: {song?.title}</div>
+}))
+
+vi.mock('../createSong', () => ({
+  default: () => <div data-testid="create-song">CreateSong Component</div>
 }))
 
 vi.mock('../../css/appAuthenticated.css', () => ({}))
@@ -74,5 +82,41 @@ describe('AppAuthenticated', () => {
   it('has app-authenticated class on container', () => {
     const { container } = render(<AppAuthenticated {...defaultProps} />)
     expect(container.querySelector('.app-authenticated')).toBeInTheDocument()
+  })
+
+  it('renders EditSong when currentPage is editSong', () => {
+    localStorage.getItem.mockReturnValue(JSON.stringify({ id: 1, title: 'My Song' }))
+    render(<AppAuthenticated {...defaultProps} currentPage="editSong" />)
+    expect(screen.getByTestId('edit-song')).toBeInTheDocument()
+  })
+
+  it('renders CreateSong when currentPage is newSong', () => {
+    render(<AppAuthenticated {...defaultProps} currentPage="newSong" />)
+    expect(screen.getByTestId('create-song')).toBeInTheDocument()
+  })
+
+  it('redirects to yourSongs when currentPage is songDisplay but no currentSong', async () => {
+    const setCurrentPage = vi.fn()
+    render(<AppAuthenticated {...defaultProps} currentPage="songDisplay" setCurrentPage={setCurrentPage} />)
+    await waitFor(() => {
+      expect(setCurrentPage).toHaveBeenCalledWith('yourSongs')
+    })
+  })
+
+  it('redirects to yourSongs when currentPage is editSong but no currentSong', async () => {
+    const setCurrentPage = vi.fn()
+    render(<AppAuthenticated {...defaultProps} currentPage="editSong" setCurrentPage={setCurrentPage} />)
+    await waitFor(() => {
+      expect(setCurrentPage).toHaveBeenCalledWith('yourSongs')
+    })
+  })
+
+  it('persists currentSong to localStorage when it changes', () => {
+    localStorage.getItem.mockReturnValue(JSON.stringify({ id: 1, title: 'Saved' }))
+    render(<AppAuthenticated {...defaultProps} currentPage="editSong" />)
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'currentSong',
+      JSON.stringify({ id: 1, title: 'Saved' })
+    )
   })
 })
