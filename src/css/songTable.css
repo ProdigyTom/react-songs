@@ -1,6 +1,17 @@
 .song-table {
   padding: 20px;
   margin-top: 100px;
+
+  @media screen and (max-width: 768px) {
+    padding: 10px;
+    margin-top: 50px;
+  }
+}
+
+.song-table-table {
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .song-table h2 {
@@ -12,6 +23,10 @@
 .song-table table {
   width: 70vw;
   border-collapse: collapse;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .song-table th, .song-table td {
@@ -62,4 +77,21 @@
 .delete-cell {
   text-align: center;
   width: 20px;
+  white-space: nowrap;
+
+  @media screen and (max-width: 768px) {
+    font-size: 10px;
+    width: 5px;
+  }
+}
+
+.delete-confirm {
+  cursor: pointer;
+  color: #c00;
+  font-weight: bold;
+}
+
+.delete-cancel {
+  cursor: pointer;
+  opacity: 0.6;
 }

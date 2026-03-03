@@ -11,6 +11,7 @@ const SearchResults = ({ user, searchString, setCurrentPage, setCurrentSong }) =
   const limit = 10;
   const [offset, setOffset] = React.useState(0);
   const [refreshKey, setRefreshKey] = React.useState(0);
+  const [confirmDeleteId, setConfirmDeleteId] = React.useState(null);
 
   React.useEffect(() => {
     const fetchUserSearch = async () => {
@@ -37,7 +38,7 @@ const SearchResults = ({ user, searchString, setCurrentPage, setCurrentSong }) =
   return (
     <div className="song-table">
       <h2>Search Results</h2>
-      <table>
+      <table className="song-table-table">
         <thead>
           <tr>
             <th>Title</th>
@@ -52,14 +53,25 @@ const SearchResults = ({ user, searchString, setCurrentPage, setCurrentSong }) =
             }}>
               <td>{song.title}</td>
               <td>{song.artist}</td>
-              <td className="delete-cell"><b onClick={(e) => { 
-                              e.stopPropagation(); 
-                              deleteSong(user, song.id).then((response) => {
-                                setRefreshKey(prev => prev + 1);
-                              }).catch(() => {
-                                showToast('Failed to delete song');
-                              });
-                            }} className="delete-song">X</b></td>
+              <td className="delete-cell" onClick={(e) => e.stopPropagation()}>
+                {confirmDeleteId === song.id ? (
+                  <>
+                    <span className="delete-confirm" onClick={() => {
+                      deleteSong(user, song.id).then(() => {
+                        setConfirmDeleteId(null);
+                        setRefreshKey(prev => prev + 1);
+                      }).catch(() => {
+                        showToast('Failed to delete song');
+                        setConfirmDeleteId(null);
+                      });
+                    }}>Sure?</span>
+                    {' '}
+                    <span className="delete-cancel" onClick={() => setConfirmDeleteId(null)}>Cancel</span>
+                  </>
+                ) : (
+                  <b className="delete-song" onClick={() => setConfirmDeleteId(song.id)}>X</b>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
