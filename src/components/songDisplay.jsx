@@ -133,21 +133,23 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
   return (
     <div className="song-display">
       <div className="title-area">
-        <FontAwesomeIcon icon={faClipboardList} className="options-toggle-btn" onClick={() => {
-          if (!isOptionsPanelOpen) {
-            setHasOpenedOptionsPanel(true);
-            requestAnimationFrame(() => setIsOptionsPanelOpen(true));
-          } else {
-            setIsOptionsPanelOpen(false);
-          }
-        }} />
-        <h2 className="title">{song.title} - {song.artist}</h2>
-        <div className="scroll-controls">
-          <span className="scroll-label">Scroll:</span>
-          <div className="scroll-speed-adjust scroll-speed-minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
-          <div className="scroll-speed-adjust scroll-speed-plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
-          <button className="scroll-toggle-btn" onClick={toggleScrolling}>{isScrolling ? 'Stop' : 'Start'}</button>
+        <div className="title-left">
+          <FontAwesomeIcon icon={faClipboardList} className="options-toggle-btn" onClick={() => {
+            if (!isOptionsPanelOpen) {
+              setHasOpenedOptionsPanel(true);
+              requestAnimationFrame(() => setIsOptionsPanelOpen(true));
+            } else {
+              setIsOptionsPanelOpen(false);
+            }
+          }} />
+          <div className="scroll-controls">
+            <span className="scroll-label">Scroll:</span>
+            <div className="scroll-speed-adjust scroll-speed-minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
+            <div className="scroll-speed-adjust scroll-speed-plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
+            <button className="scroll-toggle-btn" onClick={toggleScrolling}>{isScrolling ? 'Stop' : 'Start'}</button>
+          </div>
         </div>
+        <h2 className="title">{song.title} - {song.artist}</h2>
         <FontAwesomeIcon icon={faVideo} className="video-toggle-btn" onClick={() => {
           if (!isVideoPanelOpen) {
             setHasOpenedVideoPanel(true);
