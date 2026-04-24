@@ -188,6 +188,10 @@
 
   border-radius: 8px;
 
+  @media (max-width: 768px) {
+    height: 79vh;
+  }
+
   @media (max-height: 500px) {
     height: 60vh;
   }

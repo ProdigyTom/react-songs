@@ -6,13 +6,20 @@
   --brown: #353535;
 }
 
+html {
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
   display: flex;
   place-items: center;
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
   font-family: Inter, Roboto, "Helvetica Neue", "Arial Nova", sans-serif;
 }
 
