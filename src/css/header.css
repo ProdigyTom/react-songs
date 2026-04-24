@@ -5,8 +5,10 @@
   font-size: 24px;
   font-weight: bold;
 
-  padding: 0.5em;
-  height: 30px;
+  height: 56px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   position: fixed;
