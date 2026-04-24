@@ -3,7 +3,7 @@ import '../css/songDisplay.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import { faClipboardList } from '@fortawesome/free-solid-svg-icons'; 
-import { fetchTabForSong } from '../services/api';
+import { fetchTabForSong, saveScrollSpeed } from '../services/api';
 import VideoPanel from './videoPanel';
 import { useToast } from '../context/ToastContext';
 
@@ -103,6 +103,7 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
         const fetchedTab = await fetchTabForSong(user, song.id);
         setTab(fetchedTab.text);
         setOriginalTab(fetchedTab.text);
+        setScrollSpeed(fetchedTab.scroll_speed ?? 20);
       } catch (err) {
         showToast('Failed to load tab');
         setError('Failed to load tab');
@@ -111,6 +112,15 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
 
     getTab();
   }, [user, song.id]);
+
+  async function handleSaveScrollSpeed() {
+    try {
+      await saveScrollSpeed(user, song.id, scrollSpeed);
+      showToast('Scroll speed saved', 'success');
+    } catch {
+      showToast('Failed to save scroll speed');
+    }
+  }
 
   function handleTransposeUp() {
     setTab(prevTab => transposeTab(prevTab, 1));
@@ -160,6 +170,7 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
                 <div className="plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
                 <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
               </div>
+              <button onClick={handleSaveScrollSpeed}>Save Speed</button>
               <button onClick={() => toggleScrolling()}>{isScrolling ? 'Stop' : 'Start'}</button>
             </div>
           )}

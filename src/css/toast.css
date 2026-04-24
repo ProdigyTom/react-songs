@@ -39,6 +39,12 @@
   border: 1px solid #8b2e2e;
 }
 
+.toast-success {
+  background-color: #1a3d1f;
+  color: var(--light-grey);
+  border: 1px solid #2e6e35;
+}
+
 .toast-message {
   flex: 1;
 }

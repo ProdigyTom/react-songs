@@ -91,4 +91,19 @@ const deleteSong = async (user, songId) => {
   return response.status;
 };
 
-export { fetchSongs, fetchSearchSongs, fetchTabForSong, fetchVideosForSong, createNewSong, editSong, deleteSong };
+const saveScrollSpeed = async (user, songId, scrollSpeed) => {
+  const response = await fetch(`${API_URL}/songs/${songId}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${user.session_jwt}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ scroll_speed: scrollSpeed })
+  });
+  if (!response.ok) {
+    throw new Error('Failed to save scroll speed');
+  }
+  return response.json();
+};
+
+export { fetchSongs, fetchSearchSongs, fetchTabForSong, fetchVideosForSong, createNewSong, editSong, deleteSong, saveScrollSpeed };

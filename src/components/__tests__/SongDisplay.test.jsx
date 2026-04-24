@@ -4,12 +4,14 @@ import SongDisplay from '../songDisplay'
 import * as api from '../../services/api'
 
 vi.mock('../../services/api')
-vi.mock('../../context/ToastContext', () => ({ useToast: () => vi.fn() }))
+
+const mockShowToast = vi.fn()
+vi.mock('../../context/ToastContext', () => ({ useToast: () => mockShowToast }))
 
 describe('SongDisplay', () => {
   const mockUser = { name: 'Test User', session_jwt: 'token123' }
   const mockSong = { id: 1, title: 'Test Song', artist: 'Test Artist' }
-  const mockTab = { text: 'Am  G  C\nHello world' }
+  const mockTab = { text: 'Am  G  C\nHello world', scroll_speed: 30 }
   const mockVideos = [
     { id: 1, video_type: 'Official Video', url: 'https://www.youtube.com/embed/abc123' },
     { id: 2, video_type: 'Live Version', url: 'https://www.youtube.com/embed/def456' }
@@ -19,6 +21,8 @@ describe('SongDisplay', () => {
     vi.clearAllMocks()
     api.fetchTabForSong.mockResolvedValue(mockTab)
     api.fetchVideosForSong.mockResolvedValue(mockVideos)
+    api.saveScrollSpeed.mockResolvedValue({ song: { id: 1, scroll_speed: 30 } })
+    mockShowToast.mockClear()
   })
 
   const waitForFetch = () => waitFor(() => {
@@ -93,6 +97,74 @@ describe('SongDisplay', () => {
     await waitForFetch()
 
     expect(document.querySelector('.minus')).toBeInTheDocument()
+  })
+
+  it('renders Save Speed button', async () => {
+    render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
+
+    expect(screen.getByRole('button', { name: 'Save Speed' })).toBeInTheDocument()
+  })
+
+  it('initialises scroll speed from tab scroll_speed', async () => {
+    render(<SongDisplay user={mockUser} song={mockSong} />)
+
+    await waitFor(() => {
+      expect(api.saveScrollSpeed).not.toHaveBeenCalled()
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+
+    await waitFor(() => {
+      expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockUser, mockSong.id, 30)
+    })
+  })
+
+  it('falls back to speed 20 when tab has no scroll_speed', async () => {
+    api.fetchTabForSong.mockResolvedValue({ text: 'Am G C', scroll_speed: null })
+    render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+
+    await waitFor(() => {
+      expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockUser, mockSong.id, 20)
+    })
+  })
+
+  it('calls saveScrollSpeed with current speed when Save Speed is clicked', async () => {
+    render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
+
+    fireEvent.click(document.querySelector('.plus'))
+    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+
+    await waitFor(() => {
+      expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockUser, mockSong.id, 40)
+    })
+  })
+
+  it('shows success toast when scroll speed saves successfully', async () => {
+    render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+
+    await waitFor(() => {
+      expect(mockShowToast).toHaveBeenCalledWith('Scroll speed saved', 'success')
+    })
+  })
+
+  it('shows error toast when scroll speed save fails', async () => {
+    api.saveScrollSpeed.mockRejectedValue(new Error('Network error'))
+    render(<SongDisplay user={mockUser} song={mockSong} />)
+    await waitForFetch()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+
+    await waitFor(() => {
+      expect(mockShowToast).toHaveBeenCalledWith('Failed to save scroll speed')
+    })
   })
 
   it('handles fetch error gracefully', async () => {

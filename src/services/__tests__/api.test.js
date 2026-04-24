@@ -7,6 +7,7 @@ import {
   createNewSong,
   editSong,
   deleteSong,
+  saveScrollSpeed,
 } from '../../services/api'
 
 const mockUser = { session_jwt: 'test-token' }
@@ -194,6 +195,32 @@ describe('api', () => {
     it('throws on non-ok response', async () => {
       fetch.mockReturnValue(Promise.resolve({ ok: false, status: 500 }))
       await expect(deleteSong(mockUser, 3)).rejects.toThrow('Failed to delete song')
+    })
+  })
+
+  describe('saveScrollSpeed', () => {
+    it('sends PUT with scroll_speed to song URL', async () => {
+      fetch.mockReturnValue(okJson({ song: { id: 5, scroll_speed: 30 } }))
+      await saveScrollSpeed(mockUser, 5, 30)
+      expect(fetch).toHaveBeenCalledWith('/api/songs/5', {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer test-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ scroll_speed: 30 }),
+      })
+    })
+
+    it('returns parsed response', async () => {
+      const res = { song: { id: 5, scroll_speed: 30 } }
+      fetch.mockReturnValue(okJson(res))
+      expect(await saveScrollSpeed(mockUser, 5, 30)).toEqual(res)
+    })
+
+    it('throws on non-ok response', async () => {
+      fetch.mockReturnValue(errorResponse())
+      await expect(saveScrollSpeed(mockUser, 5, 30)).rejects.toThrow('Failed to save scroll speed')
     })
   })
 })

@@ -11,7 +11,7 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 3000,
+    port: 3002,
     allowedHosts: ['localhost', 'song-project.xyz', 'www.song-project.xyz'],
     proxy: {
       '/api': 'http://localhost:3001'
