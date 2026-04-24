@@ -89,14 +89,14 @@ describe('SongDisplay', () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    expect(document.querySelector('.plus')).toBeInTheDocument()
+    expect(document.querySelector('.scroll-speed-plus')).toBeInTheDocument()
   })
 
   it('renders speed decrease control', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    expect(document.querySelector('.minus')).toBeInTheDocument()
+    expect(document.querySelector('.scroll-speed-minus')).toBeInTheDocument()
   })
 
   it('renders Save Speed button', async () => {
@@ -136,7 +136,7 @@ describe('SongDisplay', () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    fireEvent.click(document.querySelector('.plus'))
+    fireEvent.click(document.querySelector('.scroll-speed-plus'))
     fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
 
     await waitFor(() => {

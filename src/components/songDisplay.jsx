@@ -136,42 +136,39 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
         <FontAwesomeIcon icon={faClipboardList} className="options-toggle-btn" onClick={() => {
           if (!isOptionsPanelOpen) {
             setHasOpenedOptionsPanel(true);
-            // Delay opening so component mounts first, then animates
             requestAnimationFrame(() => setIsOptionsPanelOpen(true));
           } else {
             setIsOptionsPanelOpen(false);
           }
         }} />
         <h2 className="title">{song.title} - {song.artist}</h2>
+        <div className="scroll-controls">
+          <span className="scroll-label">Scroll:</span>
+          <div className="scroll-speed-adjust scroll-speed-minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
+          <div className="scroll-speed-adjust scroll-speed-plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
+          <button className="scroll-toggle-btn" onClick={toggleScrolling}>{isScrolling ? 'Stop' : 'Start'}</button>
+        </div>
         <FontAwesomeIcon icon={faVideo} className="video-toggle-btn" onClick={() => {
           if (!isVideoPanelOpen) {
             setHasOpenedVideoPanel(true);
-            // Delay opening so component mounts first, then animates
-              requestAnimationFrame(() => setIsVideoPanelOpen(true));
-            } else {
-              setIsVideoPanelOpen(false);
-            }
-          }}
-         />
+            requestAnimationFrame(() => setIsVideoPanelOpen(true));
+          } else {
+            setIsVideoPanelOpen(false);
+          }
+        }} />
       </div>
       <div className="song-content-wrapper">
         <div className="tab-container">
           {hasOpenedOptionsPanel && (
             <div className={`buttons${!isOptionsPanelOpen ? ' buttons-closed' : ''}`}>
               <button className="edit-tab" onClick={() => setCurrentPage('editSong')}>Edit Song</button>
+              <button onClick={handleSaveScrollSpeed}>Save Speed</button>
               <h3 className="button-heading">Transpose:</h3>
               <div className="transpose-buttons">
                 <div className="transpose-up" onClick={handleTransposeUp}>+</div>
                 <div className="transpose-down" onClick={handleTransposeDown}>-</div>
               </div>
               <button className="reset-tab" onClick={() => setTab(originalTab)}>Reset</button>
-              <h3 className="button-heading">Scroll:</h3>
-              <div className="plus-minus">
-                <div className="plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
-                <div className="minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
-              </div>
-              <button onClick={handleSaveScrollSpeed}>Save Speed</button>
-              <button onClick={() => toggleScrolling()}>{isScrolling ? 'Stop' : 'Start'}</button>
             </div>
           )}
 

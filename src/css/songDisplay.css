@@ -31,7 +31,7 @@
 }
 
 .video-toggle-btn {
-  margin-left: auto;
+  margin-left: 8px;
   margin-right: 10px;
   position: relative;
   pointer-events: auto;
@@ -43,8 +43,59 @@
   color: var(--brown);
 }
 
-.options-toggle-btn {
+.scroll-controls {
+  margin-left: 6px;
   margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
+  flex-shrink: 0;
+  border: 1px solid var(--brown);
+  border-radius: 8px;
+  padding: 3px 10px;
+}
+
+.scroll-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--white);
+  margin-right: 2px;
+  user-select: none;
+}
+
+.scroll-speed-adjust {
+  cursor: pointer;
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--brown);
+  line-height: 1;
+  user-select: none;
+}
+
+.scroll-toggle-btn {
+  padding: 3px 8px;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .scroll-label {
+    display: none;
+  }
+
+  .scroll-speed-adjust {
+    font-size: 22px;
+  }
+
+  .scroll-toggle-btn {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+}
+
+.options-toggle-btn {
   margin-left: 10px;
   position: relative;
   pointer-events: auto;
@@ -93,31 +144,6 @@
   padding: 0;
 }
 
-.plus-minus {
-  color: var(--brown);
-  font-size: 36px;
-  font-weight: bold;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-
-  margin-bottom: 10px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-}
-
-.plus {
-  cursor: pointer;
-}
-
-.minus {
-  cursor: pointer;
-}
 
 .tab {
   flex: 1;
@@ -165,6 +191,10 @@
   @media (max-width: 768px) {
     margin-bottom: 10px;
   }
+}
+
+.edit-tab {
+  margin-bottom: 15px;
 }
 
 .button-heading {
