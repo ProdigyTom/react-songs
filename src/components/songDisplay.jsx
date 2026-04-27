@@ -143,7 +143,7 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
             }
           }} />
           <div className="scroll-controls">
-            <span className="scroll-label">Scroll:</span>
+            <span className="scroll-label">Scroll Controls:</span>
             <div className="scroll-speed-adjust scroll-speed-minus" onClick={() => setScrollSpeed(prev => Math.max(5, prev - 10))}>-</div>
             <div className="scroll-speed-adjust scroll-speed-plus" onClick={() => setScrollSpeed(prev => prev + 10)}>+</div>
             <button className="scroll-toggle-btn" onClick={toggleScrolling}>{isScrolling ? 'Stop' : 'Start'}</button>
