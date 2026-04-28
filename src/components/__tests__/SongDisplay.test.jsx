@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import SongDisplay from '../songDisplay'
 import * as api from '../../services/api'
 
@@ -189,6 +189,57 @@ describe('SongDisplay', () => {
 
     await waitFor(() => {
       expect(api.fetchTabForSong).toHaveBeenCalledWith(2)
+    })
+  })
+
+  describe('autoscroll pause on manual scroll', () => {
+    let scrollBySpy
+
+    beforeEach(() => {
+      if (!HTMLElement.prototype.scrollBy) {
+        HTMLElement.prototype.scrollBy = () => {}
+      }
+      scrollBySpy = vi.spyOn(HTMLElement.prototype, 'scrollBy').mockImplementation(() => {})
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+      scrollBySpy.mockRestore()
+    })
+
+    async function renderAndStartScrolling() {
+      render(<SongDisplay user={mockUser} song={mockSong} />)
+      await waitFor(() => expect(api.fetchTabForSong).toHaveBeenCalled())
+      vi.useFakeTimers()
+      fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+      return screen.getByRole('textbox')
+    }
+
+    it('pauses scrollBy calls when the user fires a wheel event', async () => {
+      const textarea = await renderAndStartScrolling()
+
+      fireEvent.wheel(textarea)
+      act(() => vi.advanceTimersByTime(150)) // one interval tick (3000/30 = 100ms)
+
+      expect(scrollBySpy).not.toHaveBeenCalled()
+    })
+
+    it('resumes scrollBy calls 1500ms after the last wheel event', async () => {
+      const textarea = await renderAndStartScrolling()
+
+      fireEvent.wheel(textarea)
+      act(() => vi.advanceTimersByTime(1700)) // past 1500ms resume delay + one tick
+
+      expect(scrollBySpy).toHaveBeenCalled()
+    })
+
+    it('pauses on touchstart as well as wheel', async () => {
+      const textarea = await renderAndStartScrolling()
+
+      fireEvent.touchStart(textarea)
+      act(() => vi.advanceTimersByTime(150))
+
+      expect(scrollBySpy).not.toHaveBeenCalled()
     })
   })
 

@@ -67,6 +67,8 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
 
   const tabRef = React.useRef(null);
   const intervalRef = React.useRef(null);
+  const isPausedRef = React.useRef(false);
+  const resumeTimeoutRef = React.useRef(null);
 
   const toggleScrolling = () => {
     setIsScrolling(prev => !prev);
@@ -80,7 +82,7 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
 
     if (isScrolling) {
       intervalRef.current = setInterval(() => {
-        if (tabRef.current) tabRef.current.scrollBy({
+        if (tabRef.current && !isPausedRef.current) tabRef.current.scrollBy({
           top: 0.5,
           left: 0,
           behavior: 'smooth'
@@ -95,6 +97,29 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
       }
     };
   }, [isScrolling, scrollSpeed]);
+
+  React.useEffect(() => {
+    const el = tabRef.current;
+    if (!el || !isScrolling) return;
+
+    const handleManualScroll = () => {
+      isPausedRef.current = true;
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+      resumeTimeoutRef.current = setTimeout(() => {
+        isPausedRef.current = false;
+      }, 1500);
+    };
+
+    el.addEventListener('wheel', handleManualScroll);
+    el.addEventListener('touchstart', handleManualScroll);
+
+    return () => {
+      el.removeEventListener('wheel', handleManualScroll);
+      el.removeEventListener('touchstart', handleManualScroll);
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+      isPausedRef.current = false;
+    };
+  }, [isScrolling]);
 
   React.useEffect(() => {
     const getTab = async () => {
