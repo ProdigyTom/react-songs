@@ -100,7 +100,7 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
     const getTab = async () => {
       setError(null);
       try {
-        const fetchedTab = await fetchTabForSong(user, song.id);
+        const fetchedTab = await fetchTabForSong(song.id);
         setTab(fetchedTab.text);
         setOriginalTab(fetchedTab.text);
         setScrollSpeed(fetchedTab.scroll_speed ?? 20);
@@ -115,7 +115,7 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
 
   async function handleSaveScrollSpeed() {
     try {
-      await saveScrollSpeed(user, song.id, scrollSpeed);
+      await saveScrollSpeed(song.id, scrollSpeed);
       showToast('Scroll speed saved', 'success');
     } catch {
       showToast('Failed to save scroll speed');

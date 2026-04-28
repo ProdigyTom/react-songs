@@ -1,7 +1,8 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import App from './App'
+import * as api from './services/api'
 
 vi.mock('./components/login.jsx', () => ({
   default: () => <div data-testid="login" />,
@@ -18,6 +19,7 @@ vi.mock('./components/menu', () => ({
 vi.mock('./context/ToastContext', () => ({
   ToastProvider: ({ children }) => <>{children}</>,
 }))
+vi.mock('./services/api')
 
 describe('App', () => {
   beforeEach(() => {
@@ -52,7 +54,7 @@ describe('App', () => {
   })
 
   it('loads user from cookie on mount and shows authenticated view', async () => {
-    document.cookie = 'user_data={"name":"Cookie User","session_jwt":"tok"}'
+    document.cookie = 'user_data={"name":"Cookie User","user_id":"uuid-123"}'
     render(<App />)
     await waitFor(() => {
       expect(screen.getByTestId('app-authenticated')).toBeInTheDocument()
@@ -61,7 +63,7 @@ describe('App', () => {
   })
 
   it('does not show Login after user is loaded from cookie', async () => {
-    document.cookie = 'user_data={"name":"Cookie User","session_jwt":"tok"}'
+    document.cookie = 'user_data={"name":"Cookie User","user_id":"uuid-123"}'
     render(<App />)
     await waitFor(() => {
       expect(screen.queryByTestId('login')).not.toBeInTheDocument()
@@ -90,5 +92,22 @@ describe('App', () => {
     render(<App />)
     // It doesn't throw and the restored value is used
     expect(localStorage.getItem).toHaveBeenCalledWith('currentPage')
+  })
+
+  it('registers an unauthorized handler that clears user and cookie', async () => {
+    api.logout.mockResolvedValue()
+    let capturedHandler
+    api.setUnauthorizedHandler.mockImplementation(fn => { capturedHandler = fn })
+
+    document.cookie = 'user_data={"name":"Cookie User","user_id":"uuid-123"}'
+    render(<App />)
+
+    await waitFor(() => expect(screen.getByTestId('app-authenticated')).toBeInTheDocument())
+    await waitFor(() => expect(capturedHandler).toBeDefined())
+
+    act(() => capturedHandler())
+
+    await waitFor(() => expect(screen.getByTestId('login')).toBeInTheDocument())
+    expect(api.logout).toHaveBeenCalled()
   })
 })

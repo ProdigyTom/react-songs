@@ -42,7 +42,7 @@ describe('SearchResults', () => {
     )
 
     await waitFor(() => {
-      expect(api.fetchSearchSongs).toHaveBeenCalledWith(mockUser, 10, 0, 'test query')
+      expect(api.fetchSearchSongs).toHaveBeenCalledWith(10, 0, 'test query')
     })
   })
 
@@ -196,7 +196,7 @@ describe('SearchResults', () => {
       fireEvent.click(screen.getByText('Next page ->'))
 
       await waitFor(() => {
-        expect(api.fetchSearchSongs).toHaveBeenCalledWith(mockUser, 10, 10, 'test')
+        expect(api.fetchSearchSongs).toHaveBeenCalledWith(10, 10, 'test')
       })
     })
   })

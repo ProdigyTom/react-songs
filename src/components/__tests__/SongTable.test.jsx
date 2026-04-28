@@ -9,7 +9,6 @@ const mockShowToast = vi.hoisted(() => vi.fn())
 vi.mock('../../context/ToastContext', () => ({ useToast: () => mockShowToast }))
 
 describe('SongTable', () => {
-  const mockUser = { session_jwt: 'token' }
   const mockSongs = [
     { id: 1, title: 'Song One', artist: 'Artist A' },
     { id: 2, title: 'Song Two', artist: 'Artist B' },
@@ -22,7 +21,6 @@ describe('SongTable', () => {
     limit: 10,
     offset: 0,
     setOffset: vi.fn(),
-    user: mockUser,
     setCurrentPage: vi.fn(),
     setCurrentSong: vi.fn(),
     onDeleteSuccess: vi.fn(),
@@ -99,7 +97,7 @@ describe('SongTable', () => {
       fireEvent.click(screen.getAllByText('X')[0])
       fireEvent.click(screen.getByText('Sure?'))
       await waitFor(() => {
-        expect(api.deleteSong).toHaveBeenCalledWith(mockUser, 1)
+        expect(api.deleteSong).toHaveBeenCalledWith(1)
         expect(onDeleteSuccess).toHaveBeenCalled()
       })
     })

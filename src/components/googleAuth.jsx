@@ -9,13 +9,13 @@ const GoogleAuth = ({ setUser }) => {
   };
 
   const onSuccess = async (credentialResponse) => {
-    
     const res = await fetch('/api/auth/google', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ token: credentialResponse.credential }),
     });
-    
+
     if (res.ok) {
       const userData = await res.json();
       setCookie('user_data', JSON.stringify(userData), 7);

@@ -40,7 +40,7 @@ describe('SongDisplay', () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
 
     await waitFor(() => {
-      expect(api.fetchTabForSong).toHaveBeenCalledWith(mockUser, mockSong.id)
+      expect(api.fetchTabForSong).toHaveBeenCalledWith(mockSong.id)
     })
   })
 
@@ -116,7 +116,7 @@ describe('SongDisplay', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
 
     await waitFor(() => {
-      expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockUser, mockSong.id, 30)
+      expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockSong.id, 30)
     })
   })
 
@@ -128,7 +128,7 @@ describe('SongDisplay', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
 
     await waitFor(() => {
-      expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockUser, mockSong.id, 20)
+      expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockSong.id, 20)
     })
   })
 
@@ -140,7 +140,7 @@ describe('SongDisplay', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
 
     await waitFor(() => {
-      expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockUser, mockSong.id, 40)
+      expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockSong.id, 40)
     })
   })
 
@@ -180,7 +180,7 @@ describe('SongDisplay', () => {
     const { rerender } = render(<SongDisplay user={mockUser} song={mockSong} />)
 
     await waitFor(() => {
-      expect(api.fetchTabForSong).toHaveBeenCalledWith(mockUser, 1)
+      expect(api.fetchTabForSong).toHaveBeenCalledWith(1)
     })
 
     const newSong = { id: 2, title: 'New Song', artist: 'New Artist' }
@@ -188,7 +188,7 @@ describe('SongDisplay', () => {
     rerender(<SongDisplay user={mockUser} song={newSong} />)
 
     await waitFor(() => {
-      expect(api.fetchTabForSong).toHaveBeenCalledWith(mockUser, 2)
+      expect(api.fetchTabForSong).toHaveBeenCalledWith(2)
     })
   })
 
@@ -207,7 +207,7 @@ describe('SongDisplay', () => {
       fireEvent.click(document.querySelector('.video-toggle-btn'))
 
       await waitFor(() => {
-        expect(api.fetchVideosForSong).toHaveBeenCalledWith(mockUser, mockSong.id)
+        expect(api.fetchVideosForSong).toHaveBeenCalledWith(mockSong.id)
       })
     })
 

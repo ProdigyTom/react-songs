@@ -15,7 +15,7 @@ const SearchResults = ({ user, searchString, setCurrentPage, setCurrentSong }) =
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchSearchSongs(user, limit, offset, searchString);
+        const data = await fetchSearchSongs(limit, offset, searchString);
         setSongs(data);
       } catch {
         setError('Failed to fetch songs');
@@ -38,7 +38,6 @@ const SearchResults = ({ user, searchString, setCurrentPage, setCurrentSong }) =
       limit={limit}
       offset={offset}
       setOffset={setOffset}
-      user={user}
       setCurrentPage={setCurrentPage}
       setCurrentSong={setCurrentSong}
       onDeleteSuccess={() => setRefreshKey(prev => prev + 1)}

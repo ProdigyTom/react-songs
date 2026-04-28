@@ -1,7 +1,14 @@
 import React from 'react';
 import '../css/header.css'
+import { logout } from '../services/api';
 
 const Header = ({ user, setUser, toggleMenu }) => {
+  const handleLogout = async () => {
+    await logout();
+    document.cookie = 'user_data=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    setUser(null);
+  };
+
   return (
     <div className="header">
       {user ? (
@@ -12,10 +19,7 @@ const Header = ({ user, setUser, toggleMenu }) => {
           <div className="header-title">Song Project</div>
           <div className="header-right">
             <div className="header-welcome">Welcome, {user.name}</div>
-            <button className="header-logout" onClick={() => {
-              setUser(null);
-              document.cookie = 'user_data=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            }}>
+            <button className="header-logout" onClick={handleLogout}>
               Logout
             </button>
           </div>

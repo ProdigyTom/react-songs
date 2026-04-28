@@ -17,7 +17,7 @@ const VideoPanel = ({ user, songId, isOpen, panelWidth, onPanelWidthChange }) =>
   React.useEffect(() => {
     const getVideos = async () => {
       try {
-        const result = await fetchVideosForSong(user, songId);
+        const result = await fetchVideosForSong(songId);
         const videoList = result || [];
         setVideos(videoList);
         if (videoList.length > 0) {

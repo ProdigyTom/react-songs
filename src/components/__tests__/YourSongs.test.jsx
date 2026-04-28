@@ -28,7 +28,7 @@ describe('YourSongs', () => {
     render(<YourSongs user={mockUser} setCurrentPage={vi.fn()} setCurrentSong={vi.fn()} />)
 
     await waitFor(() => {
-      expect(api.fetchSongs).toHaveBeenCalledWith(mockUser, 10, 0)
+      expect(api.fetchSongs).toHaveBeenCalledWith(10, 0)
     })
   })
 
@@ -132,7 +132,7 @@ describe('YourSongs', () => {
       fireEvent.click(screen.getByText('Next page ->'))
 
       await waitFor(() => {
-        expect(api.fetchSongs).toHaveBeenCalledWith(mockUser, 10, 10)
+        expect(api.fetchSongs).toHaveBeenCalledWith(10, 10)
       })
     })
   })

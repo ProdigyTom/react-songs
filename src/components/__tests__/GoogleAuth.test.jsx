@@ -35,7 +35,7 @@ describe('GoogleAuth', () => {
     expect(screen.getByTestId('google-login-button')).toBeInTheDocument()
   })
 
-  it('calls API on successful Google login', async () => {
+  it('calls API with credentials: include on successful Google login', async () => {
     globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({ name: 'Test User', email: 'test@example.com' }),
@@ -52,14 +52,15 @@ describe('GoogleAuth', () => {
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ token: 'mock-credential' }),
         })
       )
     })
   })
 
-  it('sets user and cookie on successful API response', async () => {
-    const userData = { name: 'Test User', email: 'test@example.com', session_jwt: 'jwt123' }
+  it('sets user on successful API response without session_jwt', async () => {
+    const userData = { name: 'Test User', email: 'test@example.com', user_id: 'uuid-123' }
     globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve(userData),
@@ -73,6 +74,23 @@ describe('GoogleAuth', () => {
     await vi.waitFor(() => {
       expect(setUser).toHaveBeenCalledWith(userData)
     })
+  })
+
+  it('does not store session_jwt in the user_data cookie', async () => {
+    const userData = { name: 'Test User', email: 'test@example.com', user_id: 'uuid-123' }
+    globalThis.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(userData),
+    })
+
+    render(<GoogleAuth setUser={vi.fn()} />)
+    screen.getByTestId('google-login-button').click()
+
+    await vi.waitFor(() => {
+      expect(document.cookie).toContain('user_data=')
+    })
+
+    expect(document.cookie).not.toContain('session_jwt')
   })
 
   it('does not call setUser when API returns error', async () => {

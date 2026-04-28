@@ -3,7 +3,7 @@ import { deleteSong } from '../services/api';
 import '../css/songTable.css';
 import { useToast } from '../context/ToastContext';
 
-const SongTable = ({ title, songs, loading, error, limit, offset, setOffset, user, setCurrentPage, setCurrentSong, onDeleteSuccess }) => {
+const SongTable = ({ title, songs, loading, error, limit, offset, setOffset, setCurrentPage, setCurrentSong, onDeleteSuccess }) => {
   const showToast = useToast();
   const [confirmDeleteId, setConfirmDeleteId] = React.useState(null);
 
@@ -32,7 +32,7 @@ const SongTable = ({ title, songs, loading, error, limit, offset, setOffset, use
                 {confirmDeleteId === song.id ? (
                   <>
                     <span className="delete-confirm" onClick={() => {
-                      deleteSong(user, song.id).then(() => {
+                      deleteSong(song.id).then(() => {
                         setConfirmDeleteId(null);
                         onDeleteSuccess();
                       }).catch(() => {

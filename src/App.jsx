@@ -5,11 +5,20 @@ import Header from './components/header';
 import AppAuthenticated from './components/appAuthenticated';
 import Menu from './components/menu';
 import { ToastProvider } from './context/ToastContext';
+import { setUnauthorizedHandler, logout } from './services/api.js';
 import './css/App.css';
 import './css/toast.css';
 
 function App() {
   const [user, setUser] = useState(null);
+
+  React.useEffect(() => {
+    setUnauthorizedHandler(() => {
+      logout();
+      document.cookie = 'user_data=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      setUser(null);
+    });
+  }, []);
   const [showMenu, setShowMenu] = useState(false);
   const [currentPage, setCurrentPage] = useState(() => localStorage.getItem('currentPage') || 'yourSongs');
   const [searchString, setSearchString] = useState('');

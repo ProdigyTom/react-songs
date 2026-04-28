@@ -72,7 +72,7 @@ describe('SongForm', () => {
       fireEvent.change(document.getElementById('song-artist'), { target: { value: 'Band' } })
       fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
       await waitFor(() => {
-        expect(api.createNewSong).toHaveBeenCalledWith(mockUser, {
+        expect(api.createNewSong).toHaveBeenCalledWith({
           title: 'New',
           artist: 'Band',
           tab_text: '',
@@ -167,7 +167,6 @@ describe('SongForm', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
       await waitFor(() => {
         expect(api.editSong).toHaveBeenCalledWith(
-          mockUser,
           mockSong.id,
           expect.objectContaining({ title: 'Existing Song', artist: 'Existing Artist' })
         )
@@ -233,7 +232,7 @@ describe('SongForm', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
       await waitFor(() => {
         const call = api.createNewSong.mock.calls[0]
-        expect(call[1].videos).toEqual([{ video_type: 'tutorial', url: 'https://example.com' }])
+        expect(call[0].videos).toEqual([{ video_type: 'tutorial', url: 'https://example.com' }])
       })
     })
   })

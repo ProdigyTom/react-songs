@@ -1,109 +1,91 @@
 const API_URL = '/api';
 
-const fetchSongs = async (user, limit = 10, offset = 0) => {
+let unauthorizedHandler = null;
+const setUnauthorizedHandler = (fn) => { unauthorizedHandler = fn; };
+
+const checkResponse = (response, errorMessage) => {
+  if (response.status === 401) {
+    if (unauthorizedHandler) unauthorizedHandler();
+    throw new Error('Unauthorized');
+  }
+  if (!response.ok) throw new Error(errorMessage);
+};
+
+const fetchSongs = async (limit = 10, offset = 0) => {
   const response = await fetch(`${API_URL}/songs?limit=${limit}&offset=${offset}`, {
-    headers: {
-      'Authorization': `Bearer ${user.session_jwt}`
-    }
+    credentials: 'include',
   });
-  if (!response.ok) {
-    throw new Error('Failed to fetch songs');
-  }
+  checkResponse(response, 'Failed to fetch songs');
   return response.json();
 };
 
-const fetchSearchSongs = async (user, limit = 10, offset = 0, searchString) => {
+const fetchSearchSongs = async (limit = 10, offset = 0, searchString) => {
   const response = await fetch(`${API_URL}/songs?limit=${limit}&offset=${offset}&query=${encodeURIComponent(searchString)}`, {
-    headers: {
-      'Authorization': `Bearer ${user.session_jwt}`
-    }
+    credentials: 'include',
   });
-  if (!response.ok) {
-    throw new Error('Failed to fetch search results');
-  }
+  checkResponse(response, 'Failed to fetch search results');
   return response.json();
 };
 
-const fetchTabForSong = async (user, songId) => {
+const fetchTabForSong = async (songId) => {
   const response = await fetch(`${API_URL}/tabs/${songId}`, {
-    headers: {
-      'Authorization': `Bearer ${user.session_jwt}`
-    }
+    credentials: 'include',
   });
-  if (!response.ok) {
-    throw new Error('Failed to fetch tab');
-  }
+  checkResponse(response, 'Failed to fetch tab');
   return response.json();
 };
 
-const fetchVideosForSong = async (user, songId) => {
+const fetchVideosForSong = async (songId) => {
   const response = await fetch(`${API_URL}/videos/${songId}`, {
-    headers: {
-      'Authorization': `Bearer ${user.session_jwt}`
-    }
+    credentials: 'include',
   });
-  if (!response.ok) {
-    throw new Error('Failed to fetch videos');
-  }
+  checkResponse(response, 'Failed to fetch videos');
   return response.json();
 };
 
-const createNewSong = async (user, songData) => {
+const createNewSong = async (songData) => {
   const response = await fetch(`${API_URL}/songs`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${user.session_jwt}`,
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(songData)
   });
-  if (!response.ok) {
-    throw new Error('Failed to create new song');
-  }
+  checkResponse(response, 'Failed to create new song');
   return response.json();
 };
 
-const editSong = async (user, songId, songData) => {
+const editSong = async (songId, songData) => {
   const response = await fetch(`${API_URL}/songs/${songId}`, {
     method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${user.session_jwt}`,
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(songData)
   });
-  if (!response.ok) {
-    throw new Error('Failed to edit song');
-  }
+  checkResponse(response, 'Failed to edit song');
   return response.json();
 };
 
-const deleteSong = async (user, songId) => {
+const deleteSong = async (songId) => {
   const response = await fetch(`${API_URL}/songs/${songId}`, {
     method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${user.session_jwt}`
-    }
+    credentials: 'include',
   });
-  if (!response.ok) {
-    throw new Error('Failed to delete song');
-  }
+  checkResponse(response, 'Failed to delete song');
   return response.status;
 };
 
-const saveScrollSpeed = async (user, songId, scrollSpeed) => {
+const saveScrollSpeed = async (songId, scrollSpeed) => {
   const response = await fetch(`${API_URL}/songs/${songId}`, {
     method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${user.session_jwt}`,
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ scroll_speed: scrollSpeed })
   });
-  if (!response.ok) {
-    throw new Error('Failed to save scroll speed');
-  }
+  checkResponse(response, 'Failed to save scroll speed');
   return response.json();
 };
 
-export { fetchSongs, fetchSearchSongs, fetchTabForSong, fetchVideosForSong, createNewSong, editSong, deleteSong, saveScrollSpeed };
+const logout = () =>
+  fetch(`${API_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+
+export { fetchSongs, fetchSearchSongs, fetchTabForSong, fetchVideosForSong, createNewSong, editSong, deleteSong, saveScrollSpeed, logout, setUnauthorizedHandler };

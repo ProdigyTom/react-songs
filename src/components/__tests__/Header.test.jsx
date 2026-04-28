@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import Header from '../header'
+import * as api from '../../services/api'
 
 vi.mock('../../css/header.css', () => ({}))
+vi.mock('../../services/api')
 
 describe('Header', () => {
   beforeEach(() => {
@@ -42,22 +44,26 @@ describe('Header', () => {
       expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
     })
 
-    it('calls setUser with null when logout is clicked', () => {
+    it('calls setUser with null when logout is clicked', async () => {
+      api.logout.mockResolvedValue()
       const setUser = vi.fn()
       render(<Header user={mockUser} setUser={setUser} toggleMenu={vi.fn()} />)
 
       fireEvent.click(screen.getByRole('button', { name: /logout/i }))
 
-      expect(setUser).toHaveBeenCalledWith(null)
+      await waitFor(() => expect(setUser).toHaveBeenCalledWith(null))
     })
 
-    it('clears user_data cookie when logout is clicked', () => {
+    it('clears user_data cookie when logout is clicked', async () => {
+      api.logout.mockResolvedValue()
       render(<Header user={mockUser} setUser={vi.fn()} toggleMenu={vi.fn()} />)
 
       fireEvent.click(screen.getByRole('button', { name: /logout/i }))
 
-      expect(document.cookie).toContain('user_data=')
-      expect(document.cookie).toContain('expires=Thu, 01 Jan 1970')
+      await waitFor(() => {
+        expect(document.cookie).toContain('user_data=')
+        expect(document.cookie).toContain('expires=Thu, 01 Jan 1970')
+      })
     })
 
     it('shows menu icon', () => {

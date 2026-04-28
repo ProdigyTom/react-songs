@@ -37,7 +37,7 @@ describe('VideoPanel', () => {
     renderVideoPanel()
 
     await waitFor(() => {
-      expect(api.fetchVideosForSong).toHaveBeenCalledWith(mockUser, mockSongId)
+      expect(api.fetchVideosForSong).toHaveBeenCalledWith(mockSongId)
     })
   })
 
@@ -108,7 +108,7 @@ describe('VideoPanel', () => {
     const { rerender } = renderVideoPanel()
 
     await waitFor(() => {
-      expect(api.fetchVideosForSong).toHaveBeenCalledWith(mockUser, 1)
+      expect(api.fetchVideosForSong).toHaveBeenCalledWith(1)
     })
 
     api.fetchVideosForSong.mockResolvedValue([
@@ -124,7 +124,7 @@ describe('VideoPanel', () => {
     )
 
     await waitFor(() => {
-      expect(api.fetchVideosForSong).toHaveBeenCalledWith(mockUser, 2)
+      expect(api.fetchVideosForSong).toHaveBeenCalledWith(2)
     })
   })
 

@@ -17,8 +17,8 @@ const SongForm = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
     if (!song) return;
     const fetchTab = async () => {
       try {
-        const fetchedTab = await fetchTabForSong(user, song.id);
-        const fetchedVideos = await fetchVideosForSong(user, song.id);
+        const fetchedTab = await fetchTabForSong(song.id);
+        const fetchedVideos = await fetchVideosForSong(song.id);
         setTab(fetchedTab.text);
         setVideos(fetchedVideos);
       } catch {
@@ -103,9 +103,9 @@ const SongForm = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
               let response = null;
               const completedVideos = videos.filter(video => video.video_type && video.url);
               if (type === 'Edit') {
-                response = await editSong(user, song.id, { title, artist, tab_text: tab, videos: completedVideos });
+                response = await editSong(song.id, { title, artist, tab_text: tab, videos: completedVideos });
               } else {
-                response = await createNewSong(user, { title, artist, tab_text: tab, videos: completedVideos });
+                response = await createNewSong({ title, artist, tab_text: tab, videos: completedVideos });
               }
               setCurrentSong(response.song);
               setCurrentPage('songDisplay');
