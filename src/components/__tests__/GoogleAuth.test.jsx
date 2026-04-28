@@ -3,21 +3,7 @@ import { render, screen } from '@testing-library/react'
 import GoogleAuth from '../googleAuth'
 
 vi.mock('@react-oauth/google', () => ({
-  GoogleLogin: ({ onSuccess }) => (
-    <button
-      data-testid="google-login-button"
-      onClick={() => onSuccess({ credential: 'mock-credential' })}
-    >
-      Sign in with Google
-    </button>
-  ),
-}))
-
-vi.mock('jwt-decode', () => ({
-  jwtDecode: vi.fn(() => ({
-    email: 'test@example.com',
-    name: 'Test User',
-  })),
+  useGoogleLogin: ({ onSuccess }) => () => onSuccess({ code: 'mock-code' }),
 }))
 
 describe('GoogleAuth', () => {
@@ -30,7 +16,7 @@ describe('GoogleAuth', () => {
     })
   })
 
-  it('renders GoogleLogin component', () => {
+  it('renders sign in button', () => {
     render(<GoogleAuth setUser={vi.fn()} />)
     expect(screen.getByTestId('google-login-button')).toBeInTheDocument()
   })
@@ -53,7 +39,7 @@ describe('GoogleAuth', () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ token: 'mock-credential' }),
+          body: JSON.stringify({ code: 'mock-code' }),
         })
       )
     })

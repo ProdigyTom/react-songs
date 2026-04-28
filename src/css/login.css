@@ -1,13 +1,24 @@
-.login{
+.login {
   background-color: var(--blue);
   color: var(--white);
   height: 100vh;
   width: 100vw;
-
-  margin: 0px;
-
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.login h1 {
+  margin: 0 0 0.5rem;
+}
+
+.login-description {
+  margin: 0 0 2rem;
+  font-size: 1rem;
+  opacity: 0.85;
+  text-align: center;
+  max-width: 340px;
+  line-height: 1.6;
 }
