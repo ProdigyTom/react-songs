@@ -27,6 +27,10 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+          PORT: ${{ vars.FRONTEND_PORT }}
+          BACKEND_PORT: ${{ vars.BACKEND_PORT }}
 
       - name: Rsync dist to EC2
         run: |

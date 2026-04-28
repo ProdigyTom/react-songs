@@ -31,17 +31,25 @@ After logging in with Google, users can:
 # 1. Install dependencies
 npm install
 
-# 2. Start the dev server
+# 2. Create a .env file (see Environment variables below)
+
+# 3. Start the dev server
 npm run dev
 ```
 
-The app starts on `http://localhost:3002`. All `/api` requests are proxied to `http://localhost:3001` by Vite, so cookies work without any CORS configuration in the browser.
+The app starts on `http://localhost:3002` by default. All `/api` requests are proxied to `http://localhost:3001` by Vite, so cookies work without any CORS configuration in the browser.
 
 ## Environment variables
 
-The Google OAuth client ID is currently hardcoded in `src/main.jsx`. If you need to change it, update the `clientId` prop on `<GoogleOAuthProvider>` there.
+Create a `.env` file in the project root:
 
-No `.env` file is required to run the app locally.
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_GOOGLE_CLIENT_ID` | Yes | Google OAuth client ID from Google Cloud Console |
+| `PORT` | No | Dev server port (defaults to `3002`) |
+| `BACKEND_PORT` | No | Port the backend is running on, used by the Vite proxy (defaults to `3001`) |
+
+`VITE_`-prefixed variables are baked into the bundle at build time by Vite.
 
 ## Running tests
 
@@ -125,10 +133,13 @@ push to master
 
 The backend serves the `dist/` directory, or a web server (nginx, etc.) can be pointed at it directly.
 
-### Required GitHub secrets
+### Required GitHub secrets and variables
 
-| Secret | Description |
-|---|---|
-| `EC2_HOST` | Public IP or hostname of the EC2 instance |
-| `EC2_USER` | SSH user (e.g. `ec2-user`) |
-| `EC2_SSH_KEY` | Private SSH key for the EC2 instance |
+| Name | Type | Description |
+|---|---|---|
+| `EC2_HOST` | Secret | Public IP or hostname of the EC2 instance |
+| `EC2_USER` | Secret | SSH user (e.g. `ec2-user`) |
+| `EC2_SSH_KEY` | Secret | Private SSH key for the EC2 instance |
+| `VITE_GOOGLE_CLIENT_ID` | Secret | Google OAuth client ID (baked into the bundle at build time) |
+| `FRONTEND_PORT` | Variable | Dev server port (e.g. `3002`) |
+| `BACKEND_PORT` | Variable | Backend port used by the Vite proxy (e.g. `3001`) |

@@ -11,10 +11,10 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 3002,
+    port: parseInt(process.env.PORT) || 3002,
     allowedHosts: ['localhost', 'song-project.xyz', 'www.song-project.xyz'],
     proxy: {
-      '/api': 'http://localhost:3001'
+      '/api': `http://localhost:${process.env.BACKEND_PORT || 3001}`
     }
   }
 })
