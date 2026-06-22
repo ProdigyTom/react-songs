@@ -27,7 +27,7 @@ const Menu = ({ user, showMenu, toggleMenu, setCurrentPage, setSearchString }) =
 
   function handleSearch() {
     if (!searchValue.trim()) return;
-    setSearchString(searchValue);
+    setSearchString(searchValue.trim());
     setCurrentPage('searchResults');
     toggleMenu();
     setSearchValue('');
