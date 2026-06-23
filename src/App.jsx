@@ -34,7 +34,7 @@ function App() {
       const userData = getCookie('user_data');
       if (userData) {
         try {
-          const userDataJson = JSON.parse(userData);
+          const userDataJson = JSON.parse(decodeURIComponent(userData));
           setUser(userDataJson);
         } catch (error) {
           console.error('Error parsing user data:', error);

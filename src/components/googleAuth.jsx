@@ -21,7 +21,7 @@ const GoogleAuth = ({ setUser }) => {
 
       if (res.ok) {
         const userData = await res.json();
-        setCookie('user_data', JSON.stringify(userData), 7);
+        setCookie('user_data', encodeURIComponent(JSON.stringify(userData)), 7);
         setUser(userData);
       }
     },
