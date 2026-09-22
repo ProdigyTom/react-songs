@@ -327,8 +327,10 @@ describe('SongDisplay', () => {
       const toggleIcon = document.querySelector('.video-toggle-btn')
       fireEvent.click(toggleIcon)
 
+      // Panel mounts at width 0 and opens on the next animation frame,
+      // so wait for it to be fully open before toggling it closed
       await waitFor(() => {
-        expect(document.querySelector('.video-panel')).toBeInTheDocument()
+        expect(document.querySelector('.video-panel').style.width).toBe('200px')
       })
 
       fireEvent.click(toggleIcon)
