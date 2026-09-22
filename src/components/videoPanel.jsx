@@ -23,14 +23,14 @@ const VideoPanel = ({ user, songId, isOpen, panelWidth, onPanelWidthChange }) =>
         if (videoList.length > 0) {
           setSelectedVideoUrl(videoList[0].url);
         }
-      } catch (error) {
+      } catch {
         showToast('Failed to fetch videos');
         setVideos([]);
       }
     };
 
     getVideos();
-  }, [user, songId]);
+  }, [user, songId, showToast]);
 
   const handleMouseDown = (e) => {
     e.preventDefault();

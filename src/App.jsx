@@ -41,6 +41,8 @@ function App() {
         }
       }
     }
+    // Only restore the user from the cookie on first load, not after logout
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {

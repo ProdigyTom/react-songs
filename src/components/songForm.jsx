@@ -28,7 +28,9 @@ const SongForm = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
     fetchTab();
     setTitle(song?.title || '');
     setArtist(song?.artist || '');
-  }, [song?.id, user]);
+    // Keyed on song.id so a new song object with the same id doesn't wipe in-progress edits
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [song?.id, user, showToast]);
 
   const updateVideo = (index, field, value) => {
     setVideos(prev => prev.map((video, i) => i === index ? { ...video, [field]: value } : video));
@@ -109,7 +111,7 @@ const SongForm = ({ user, song, setCurrentPage, setCurrentSong, type }) => {
               }
               setCurrentSong(response.song);
               setCurrentPage('songDisplay');
-            } catch (error) {
+            } catch {
               showToast('Failed to save song. Please try again.');
               setSubmitting(false);
             }

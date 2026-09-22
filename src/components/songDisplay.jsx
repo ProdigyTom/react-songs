@@ -62,8 +62,8 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
   const [isVideoPanelOpen, setIsVideoPanelOpen] = React.useState(false);
   const [videoPanelWidth, setVideoPanelWidth] = React.useState(200);
   const [hasOpenedVideoPanel, setHasOpenedVideoPanel] = React.useState(false);
-  const [isOptionsPanelOpen, setIsOptionsPanelOpen] = React.useState(true);
-  const [hasOpenedOptionsPanel, setHasOpenedOptionsPanel] = React.useState(true);
+  const [isOptionsPanelOpen, setIsOptionsPanelOpen] = React.useState(false);
+  const [hasOpenedOptionsPanel, setHasOpenedOptionsPanel] = React.useState(false);
 
   const tabRef = React.useRef(null);
   const intervalRef = React.useRef(null);
@@ -129,14 +129,14 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
         setTab(fetchedTab.text);
         setOriginalTab(fetchedTab.text);
         setScrollSpeed(fetchedTab.scroll_speed ?? 20);
-      } catch (err) {
+      } catch {
         showToast('Failed to load tab');
         setError('Failed to load tab');
       }
     };
 
     getTab();
-  }, [user, song.id]);
+  }, [user, song.id, showToast]);
 
   async function handleSaveScrollSpeed() {
     try {
@@ -154,6 +154,9 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
   function handleTransposeDown() {
     setTab(prevTab => transposeTab(prevTab, -1));
   }
+
+  const titleText = `${song.title} - ${song.artist}`;
+  const titleSizeClass = titleText.length > 55 ? ' title-very-long' : titleText.length > 35 ? ' title-long' : '';
 
   return (
     <div className="song-display">
@@ -174,7 +177,7 @@ const SongDisplay = ({ user, song, setCurrentPage }) => {
             <button className="scroll-toggle-btn" onClick={toggleScrolling}>{isScrolling ? 'Stop' : 'Start'}</button>
           </div>
         </div>
-        <h2 className="title">{song.title} - {song.artist}</h2>
+        <h2 className={`title${titleSizeClass}`}>{titleText}</h2>
         <FontAwesomeIcon icon={faVideo} className="video-toggle-btn" onClick={() => {
           if (!isVideoPanelOpen) {
             setHasOpenedVideoPanel(true);

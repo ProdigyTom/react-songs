@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import SongDisplay from '../songDisplay'
 import * as api from '../../services/api'
@@ -28,6 +28,12 @@ describe('SongDisplay', () => {
   const waitForFetch = () => waitFor(() => {
     expect(api.fetchTabForSong).toHaveBeenCalled()
   })
+
+  // Save Speed lives in the options panel, which only mounts once the toggle is clicked
+  const getSaveSpeedButton = () => {
+    fireEvent.click(document.querySelector('.options-toggle-btn'))
+    return screen.getByRole('button', { name: 'Save Speed' })
+  }
 
   it('displays song title and artist', async () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
@@ -103,7 +109,7 @@ describe('SongDisplay', () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    expect(screen.getByRole('button', { name: 'Save Speed' })).toBeInTheDocument()
+    expect(getSaveSpeedButton()).toBeInTheDocument()
   })
 
   it('initialises scroll speed from tab scroll_speed', async () => {
@@ -113,7 +119,7 @@ describe('SongDisplay', () => {
       expect(api.saveScrollSpeed).not.toHaveBeenCalled()
     })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+    fireEvent.click(getSaveSpeedButton())
 
     await waitFor(() => {
       expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockSong.id, 30)
@@ -125,7 +131,7 @@ describe('SongDisplay', () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+    fireEvent.click(getSaveSpeedButton())
 
     await waitFor(() => {
       expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockSong.id, 20)
@@ -137,7 +143,7 @@ describe('SongDisplay', () => {
     await waitForFetch()
 
     fireEvent.click(document.querySelector('.scroll-speed-plus'))
-    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+    fireEvent.click(getSaveSpeedButton())
 
     await waitFor(() => {
       expect(api.saveScrollSpeed).toHaveBeenCalledWith(mockSong.id, 40)
@@ -148,7 +154,7 @@ describe('SongDisplay', () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+    fireEvent.click(getSaveSpeedButton())
 
     await waitFor(() => {
       expect(mockShowToast).toHaveBeenCalledWith('Scroll speed saved', 'success')
@@ -160,7 +166,7 @@ describe('SongDisplay', () => {
     render(<SongDisplay user={mockUser} song={mockSong} />)
     await waitForFetch()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Save Speed' }))
+    fireEvent.click(getSaveSpeedButton())
 
     await waitFor(() => {
       expect(mockShowToast).toHaveBeenCalledWith('Failed to save scroll speed')
